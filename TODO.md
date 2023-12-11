@@ -1,6 +1,6 @@
 usecase 1 (view recipes)
 - [x] rest routes
-- [ ] angular service
+- [x] angular service
 - [ ] angular component
 - [ ] tests
 - [ ] polishing & finish

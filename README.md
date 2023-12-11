@@ -556,10 +556,69 @@ Using the `ng generate service recipe` command, we can automatically generate a 
 
 **mean-stack-example-app/client/src/app/recipe.ts**
 
+```ts
+@Injectable({
+  providedIn: 'root'
+})
+export class RecipeService {
+
+  private url:String = "http://localhost:5200/api/recipes";
+
+  constructor(private http:HttpClient) { }
+
+  getAllRecipes(){
+    return this.http.get<Recipe>(this.url+"/");
+  }
+
+  getSingleRecipe(id:String){
+    return this.http.get<Recipe>(this.url+"/"+id);
+  }
+  
+}
 ```
-TODO: service impl. bissl mal anschauen is komisch bei mongodb tutorial   
-https://angular.dev/guide/http/making-requests
+
+Since we're writing a service that is used by other components, the class needs to be annotated with the `@Injectable` annotation.
+The constructor instantiates the `HttpClient` object, which handles the request logic - this is a feature from Angular directly.
+
+Then we have the two methods for fetching data from the API, one that queries all recipes and one that returns a single recipe. Because we want to enforce safe types, we can specify the `<Recipe>` type on the `get()` method - so the application assumes that the response is of type recipe. 
+
+That makes it a lot easier to work with, especially when using the methods in the component - which we'll take a look at now.
+
+#### Create Angular component
+
+---
+
+The recipe component will handle all the presentation, styling and presentation logic. Create one by entering the following command in your terminal:
+
+```shell
+ng generate component recipe
 ```
+
+Which should generate a folder inside the `app` directory with the following structure:
+
+```shell
+\---app
+        ...
+    \---recipe
+            recipe.component.css
+            recipe.component.html
+            recipe.component.spec.ts
+            recipe.component.ts
+```
+
+Four files make up the entire component: 
+
+ - styling (`recipe.component.css`) 
+ - presentation (`recipe.component.html`) 
+ - test (`recipe.component.spec.ts`) 
+ - logic (`recipe.component.ts`) 
+
+But why not everything in one file like React does? On one hand it's kind of a personal preference - you can do a single-file approach in Angular too, you just need to change a few properties in the annotation. 
+
+But if you have seen React components before, you know they can get pretty long and look like some delicious spaghetti(code) 🍝. 
+
+Splitting the code into seperate files makes it look better and is easier to maintain - and we follow an important principle: **Single Concern**! Each file is responsible for only one thing.
+
 
 
 
