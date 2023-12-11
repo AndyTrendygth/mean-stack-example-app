@@ -462,7 +462,7 @@ In the try block I am using my `collections.recipes` instance from the `database
 
 If everything went fine, we receive all recipes along with a status code of 200. 
 
-To receive one recipe by it's id add the following to your `recipe.routes.ts`
+To receive one recipe by it's id, add the following to your `recipe.routes.ts`
 
 **mean-stack-example-app/server/src/recipe.routes.ts**
 
@@ -485,7 +485,7 @@ recipeRouter.get("/:id",async (req, res) => {
 
 To find a recipe with a specified id, you need to extract it from the request parameter and then use it in the query.
 
-If something is returned from the query we return a 200 with the data, else a 404 is sent (because no recipe exists with the id). 
+If something is returned from the query we return a 200 with the data, else a 404 is sent (because no recipe exists with the id). Any other error runs into the catch, which sends a 500 error response.
 
 #### Register the routes
 
@@ -514,17 +514,52 @@ If you have the question why we don't make a shared library - that's because the
 Either create a `recipe.ts` + `ingredient.ts` file in the `src/app/` directory, or generate one with this command:
 
 ```shell
-ng generate interface recipe.ts
-ng generate interface ingredient.ts
+ng generate interface recipe
+ng generate interface ingredient
 ```
 
-Open up the files and add the following to them
+Open up the files and add the interface specification to them:
 
-TODO: add
+**mean-stack-example-app/client/src/app/ingredient.ts**
 
-Notice the difference from the server interfaces in the id attribute (it's just a string!).
+```ts
+export interface Ingredient {
+    name?: string;
+    quantity?: number;
+    unit?: number;
+    _id?: string;
+}
+```
 
+**mean-stack-example-app/client/src/app/recipe.ts**
 
+```ts
+export interface Recipe {
+    title?: string;
+    description?: string;
+    category?: "breakfast" | "main course" | "snack" | "dessert";
+    ingredients?: Ingredient[];
+    instructions?: string;
+    _id?: string;
+}
+```
+
+Notice the difference from the server interfaces in the id attribute (it's just a string!) and all fields have a '?' so typescript doesn't throw any errors.
+
+#### Create service to communicate with Express API
+
+---
+
+Next we'll create an Angular service that handles the communication with our API, we do this to seperate the logic from the presentation layer.
+
+Using the `ng generate service recipe` command, we can automatically generate a boilerplate service class with a test (we'll need that later on). In the service file, we can add the following to fetch some data from the api:
+
+**mean-stack-example-app/client/src/app/recipe.ts**
+
+```
+TODO: service impl. bissl mal anschauen is komisch bei mongodb tutorial   
+https://angular.dev/guide/http/making-requests
+```
 
 
 
