@@ -1,0 +1,27 @@
+<div class="p-8">
+<header class="my-6">
+    <h1 class="text-3xl font-bold">Tasty Recipe List </h1>
+    <h2 class="text-sm text-blue-500">by Andy</h2>
+</header>
+
+<main>
+    <div class="recipe-list flex gap-6">
+    @for (recipe of recipes; track recipe) {
+        <div class="recipe flex flex-col gap-2 shadow-lg p-3 rounded-lg hover:shadow-xl hover:cursor-pointer transition-all bg-neutral-50">
+            <h2 class="text-xl font-medium"><a href="/recipes/{{recipe._id}}">{{ recipe.title }}</a></h2>
+            <div class="w-min text-nowrap category rounded-xl bg-blue-200 text-blue-500 px-2 py-1 text-sm ">{{ recipe.category }}</div>
+            <p>{{ recipe.description }}</p>
+            <div class="ingredients line-clamp-3 p-1 text-neutral-400">
+                @for (ingredient of recipe.ingredients; track ingredient) {
+                    <div>
+                        <span>{{ingredient.quantity}} </span>
+                        <span>{{ingredient.unit}} </span>
+                        <span>{{ingredient.name}} </span>
+                    </div>
+                }
+            </div>
+        </div>
+    } 
+    </div>
+</main>
+</div>

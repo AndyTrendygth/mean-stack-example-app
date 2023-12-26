@@ -1,8 +1,8 @@
 usecase 1 (view recipes)
 - [x] rest routes
 - [x] angular service
-- [ ] angular component
-- [ ] tests
+- [x] angular component
+- [x] tests
 - [ ] polishing & finish
 
 usecase 2 (create recipe)
@@ -25,4 +25,6 @@ use case 4 (delete recipe)
 - [ ] angular component
 - [ ] tests
 - [ ] polishing & finish
-	
+
+Else
+- [ ] Tests

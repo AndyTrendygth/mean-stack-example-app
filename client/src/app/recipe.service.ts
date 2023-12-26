@@ -8,12 +8,11 @@ import { HttpClient } from '@angular/common/http';
 export class RecipeService {
 
   private url:String = "http://localhost:5200/api/recipes";
-  //private recipes$: Subject<Recipe[]> = new Subject
 
   constructor(private http:HttpClient) { }
 
   getAllRecipes(){
-    return this.http.get<Recipe>(this.url+"/");
+    return this.http.get<Recipe[]>(this.url+"/");
   }
 
   getSingleRecipe(id:String){

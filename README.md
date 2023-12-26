@@ -567,7 +567,7 @@ export class RecipeService {
   constructor(private http:HttpClient) { }
 
   getAllRecipes(){
-    return this.http.get<Recipe>(this.url+"/");
+    return this.http.get<Recipe[]>(this.url+"/");
   }
 
   getSingleRecipe(id:String){
@@ -588,10 +588,10 @@ That makes it a lot easier to work with, especially when using the methods in th
 
 ---
 
-The recipe component will handle all the presentation, styling and presentation logic. Create one by entering the following command in your terminal:
+The recipe-list component will handle all the presentation, styling and  logic for displaying all recipes. Create one by entering the following command in your terminal:
 
 ```shell
-ng generate component recipe
+ng generate component recipe-list
 ```
 
 Which should generate a folder inside the `app` directory with the following structure:
@@ -599,25 +599,189 @@ Which should generate a folder inside the `app` directory with the following str
 ```shell
 \---app
         ...
-    \---recipe
-            recipe.component.css
-            recipe.component.html
-            recipe.component.spec.ts
-            recipe.component.ts
+    \---recipe-list
+            recipe-list.component.css
+            recipe-list.component.html
+            recipe-list.component.spec.ts
+            recipe-list.component.ts
 ```
 
 Four files make up the entire component: 
 
- - styling (`recipe.component.css`) 
- - presentation (`recipe.component.html`) 
- - test (`recipe.component.spec.ts`) 
- - logic (`recipe.component.ts`) 
+ - styling (`recipe-list.component.css`) 
+ - presentation (`recipe-list.component.html`) 
+ - test (`recipe-list.component.spec.ts`) 
+ - logic (`recipe-list.component.ts`) 
 
 But why not everything in one file like React does? On one hand it's kind of a personal preference - you can do a single-file approach in Angular too, you just need to change a few properties in the annotation. 
 
 But if you have seen React components before, you know they can get pretty long and look like some delicious spaghetti(code) 🍝. 
 
-Splitting the code into seperate files makes it look better and is easier to maintain - and we follow an important principle: **Single Concern**! Each file is responsible for only one thing.
+Splitting the code into seperate files makes it look better and is easier to maintain - and we follow an important principle: **Single Concern**! Each file is only responsible for one part.
+
+Now we can add the following html to the `recipe-list.component.html` file: 
+
+**mean-stack-example-app/client/src/app/recipe-list/recipe-list.component.html**
+
+```html
+<div class="p-8">
+<header class="my-6">
+    <h1 class="text-3xl font-bold">Tasty Recipe List </h1>
+    <h2 class="text-sm text-blue-500">by Andy</h2>
+</header>
+
+<main>
+    <div class="recipe-list flex gap-6">
+    @for (recipe of recipes; track recipe) {
+        <div class="recipe flex flex-col gap-2 shadow-lg p-3 rounded-lg hover:shadow-xl hover:cursor-pointer transition-all bg-neutral-50">
+            <h2 class="text-xl font-medium"><a href="/recipes/{{recipe._id}}">{{ recipe.title }}</a></h2>
+            <div class="w-min text-nowrap category rounded-xl bg-blue-200 text-blue-500 px-2 py-1 text-sm ">{{ recipe.category }}</div>
+            <p>{{ recipe.description }}</p>
+            <div class="ingredients line-clamp-3 p-1 text-neutral-400">
+                @for (ingredient of recipe.ingredients; track ingredient) {
+                    <div>
+                        <span>{{ingredient.quantity}} </span>
+                        <span>{{ingredient.unit}} </span>
+                        <span>{{ingredient.name}} </span>
+                    </div>
+                }
+            </div>
+        </div>
+    } 
+    </div>
+</main>
+</div>
+```
+
+Most of the code is for styling purposes, except the data references and the brand-new syntax for html-logic in Angular 17!
+
+In earlier versions of Angular you had to write syntax inside the html tag itself (for example `*ngFor`), which makes it really confusing to use when writing a bit more complex display logic. But thankfully the Angular development team noticed that issue and you can now use @for, @if,... statements in your components!
+
+This component uses @for to render a recipe card for each recipe inside the recipes list, and a loop to render the ingredients. 
+
+To reference a variable from your component.ts file, you need to add two curly brackets `{{variable}}` surrounding the variable name. Of course the variable needs to be defined, which I did in the `recipe-list.component.ts` file:
+
+**mean-stack-example-app/client/src/app/recipe-list/recipe-list.component.ts**
+
+```ts
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Recipe } from '../recipe';
+import { RecipeService } from '../recipe.service';
+
+@Component({
+  selector: 'app-recipe-list',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './recipe-list.component.html',
+  styleUrl: './recipe-list.component.css'
+})
+export class RecipeListComponent implements OnInit{
+  recipes:Recipe[] = [];
+
+  constructor(private recipeService:RecipeService){}
+
+  ngOnInit(): void {
+    this.loadRecipes();
+  }
+
+  private loadRecipes(){
+    this.recipeService.getAllRecipes().subscribe(res => {
+      this.recipes = res;
+      console.log(res);
+    })
+  }
+}
+```
+
+In a nutshell, this code fetches the data and loads it into a variable, so the html file can use it. For that, we are calling our `getAllRecipes()` function from the `RecipeService` and set the recipes variable to the result of the method request.
+
+Since we always want the freshest data from the database we'll use the `OnInit` interface, which whenever we access the `/recipes` page calls the `ngOnInit()` function. And that function calls our load function to receive and display the newest data.
+
+With all that (fine seperated!) code, we get something that looks like this:
+
+![Recipe List Component View](/assets/recipe-list.png)
+
+
+If you looked closely, you may have noticed the link in the title of the recipe. For this link to work, we need another component which displays a single recipe in detail. Again, use the `ng generate component recipe` command for that.
+
+Before implementing anything, add the new route to the `app.routes.ts` file by adding a new object to the array:
+
+**mean-stack-example-app/client/src/app/app.routes.ts**
+
+```ts
+...
+{path: 'recipes/:id', component: RecipeComponent},
+...
+```
+
+The `:id` is a placeholder for the dynamic id each recipe has.
+
+And a bit more configuration: Since we're using these dynamic ids, we need to tell Angular that, otherwise it won't work. Inside your `app.config.ts`, add the following parameter to your `provideRouter()` function:
+
+```ts
+provideRouter(routes, withComponentInputBinding())
+```
+
+Great! Now we can work out the component logic for a single recipe.
+
+**mean-stack-example-app/client/src/app/recipe/recipe.component.ts**
+```ts
+@Component({
+  selector: 'app-recipe',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './recipe.component.html',
+  styleUrl: './recipe.component.css'
+})
+export class RecipeComponent {
+
+  constructor(private recipeService:RecipeService) {}
+
+  recipe:Recipe = {};
+  
+  @Input()
+  set id(recipeId: string) {
+    this.recipeService.getSingleRecipe(recipeId).subscribe(res=>{
+      this.recipe = res;
+    })
+  }
+}
+```
+
+The `set id()` function handles the data fetching using our service. You need to name the function like the parameter you specified in the routes, so Angular knows what you mean. 
+
+And that's all! The html is pretty easy as well:
+
+**mean-stack-example-app/client/src/app/recipe/recipe.component.html**
+
+```html
+<div class="recipe flex flex-col gap-5 p-3 h-screen bg-neutral-50">
+    <a href="/recipes" class="text-sm underline">🏠Back to home</a>
+    <h2 class="text-3xl font-medium">{{ recipe.title }}</h2>
+    <div class="w-min text-nowrap category rounded-xl bg-blue-200 text-blue-500 px-2 py-1 text-sm ">{{ recipe.category }}</div>
+    <p>{{ recipe.description }}</p>
+    <div class="ingredients p-1 text-neutral-400">
+        @for (ingredient of recipe.ingredients; track ingredient) {
+            <div>
+                <span>{{ingredient.quantity}} </span>
+                <span>{{ingredient.unit}} </span>
+                <span>{{ingredient.name}} </span>
+            </div>
+        }
+    </div>
+    <p class="max-w-96">{{recipe.instructions}}</p>
+</div>
+```
+
+
+
+
+
+
+
+
+
 
 
 

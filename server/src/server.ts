@@ -22,7 +22,7 @@ connectToMongoDb(CONNECTION_URI)
 .then(()=>{
     const app = express();
     
-    app.use("/recipes", recipeRouter);
+    app.use("/api/recipes", recipeRouter);
     app.listen(EXPRESS_PORT,()=>{
         console.log(`Server running on localhost:${EXPRESS_PORT}`);
     })
