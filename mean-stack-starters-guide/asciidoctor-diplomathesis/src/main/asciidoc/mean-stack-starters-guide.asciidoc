@@ -1,12 +1,12 @@
-== The MEAN Stack: A starters guide
+= The MEAN Stack: A starters guide
 
-=== What this article covers
+== What this article covers
 
 In this article I’ll cover the MEAN technology stack in general, how to
 set it up and build an example application – which you can code along!
 Let’s dive in.
 
-=== What’s the MEAN stack?
+== What’s the MEAN stack?
 
 In one sentence: The MEAN stack is a combination of frameworks used to
 build full stack web applications. It is JavaScript based, so every
@@ -26,11 +26,11 @@ frontend. The stack and its variations are very popular, especially with
 JavaScript developers. Now, let us have a look at these technologies in
 detail.
 
-=== The architecture of MEAN
+== The architecture of MEAN
 
 TODO: add MEAN architecture graphic
 
-==== MongoDB as the primary database
+=== MongoDB as the primary database
 
 '''''
 
@@ -44,12 +44,12 @@ as a database.
 
 https://www.mongodb.com/what-is-mongodb
 
-==== Express and Node.js for the backend
+=== Express and Node.js for the backend
 
 '''''
 
 Sitting on top of the database, we have our backend server hosted with
-Node and an Express API.
+Node.js and an Express API.
 
 Node.js is a JavaScript runtime environment mostly acting as a server
 for such applications. The ``feature'' making Node outstanding is that
@@ -66,13 +66,13 @@ stack.
 
 https://expressjs.com/
 
-==== Angular as the frontend
+=== Angular as the frontend
 
 '''''
 
 Firstly developed and published by Google in 2016 – as a rewrite of
 AngularJS, it is a TypeScript/JavaScript frontend framework for building
-small to big enterprise applications.
+small projects and scalable enterprise applications.
 
 Being TypeScript first, safe, and robust development is ensured with
 strong types – making it extremely popular in enterprise applications. +
@@ -82,7 +82,7 @@ styling and functionality.
 And something special about this guide: we’ll work with *Angular 17*,
 which has a lot of updates and new features!
 
-=== Variations of the MEAN stack
+== Variations of the MEAN stack
 
 The frontend framework is the most opinionated discussion around web
 developers (JavaScript framework war) and caused the variations of the
@@ -102,7 +102,7 @@ or with any other frontend framework you like, such as:
 
 But for this article, we’ll stick with the original Angular.
 
-=== Who uses the MEAN stack?
+== Who uses the MEAN stack?
 
 I previously mentioned that MEAN is pretty popular, but which companies
 do actually use it? Well, here’s some examples:
@@ -121,9 +121,9 @@ https://www.trio.dev/blog/companies-use-angular
 https://blog.hubspot.com/website/angularjs-website-examples
 https://www.monocubed.com/blog/websites-built-with-angular/
 
-=== Pros of the MEAN stack
+== Pros of the MEAN stack
 
-==== Only one language
+=== Only one language
 
 '''''
 
@@ -138,7 +138,7 @@ switch technologies every time you work on different architecture
 layers. That may increase your productivity and you can become a very
 advanced JavaScript developer when working a lot with the technology.
 
-==== Big community and well supported
+=== Big community and well supported
 
 '''''
 
@@ -156,12 +156,12 @@ Moreover, MongoDB is being looked after by MongoDB Inc., the company
 that founded the database platform – a big pro because the database
 really matters.
 
-=== Cons of the MEAN stack
+== Cons of the MEAN stack
 
 Not everything is perfect even the MEAN stack! Sadly, it still has some
 flaws which need to be considered as well.
 
-==== No types by default
+=== No types by default
 
 '''''
 
@@ -175,22 +175,22 @@ they don’t have to). That makes your code hard to maintain, test and
 extend especially for developers that don’t know your codebase that
 well.
 
-==== Logic isolation
+=== Logic isolation
 
 '''''
 
 Since we have a tight connected business and server logic it is pretty
 hard to separate them – often causing 🍝(spaghetti)-code, something that
-we do not really want for scalable and maintainable applications.
+we do not really want for scalable, testable and maintainable applications.
 
-=== How to set up a MEAN application
+== How to set up a MEAN application
 
-I think you got the core concepts and ideas of MEAN, so now let us have
+I think you got the core concepts and ideas of MEAN, so let us now have
 a look on how to set up a walking-skeleton application! Please note that
 this is an opinionated guide – you could structure the project
 differently as well.
 
-==== What you’ll need to follow along
+=== What you’ll need to follow along
 
 Before starting to read the guide make sure you have the following
 things ready:
@@ -203,7 +203,7 @@ things ready:
 
 If you got everything ready, go on reading!
 
-==== Setup MongoDB Docker container
+=== Setup MongoDB Docker container
 
 '''''
 
@@ -240,14 +240,13 @@ our database using the MongoDB extension. Just click on the `Add a
 connection' button and choose `Connection Settings' – which will open a
 form to specify the connection.
 
-image::/assets/mongodb_form.png[MongoDB VS Code extension set up form]
+image::../images/mongodb_form.png[MongoDB VS Code extension set up form]
 
 Enter the username and password from the docker run command and hit
 connect! Now you should see the connection in the sidebar and its
 databases when expanding the toggle.
 
-image::/assets/mongodb_toggle_view.png[MongoDB VS Code extension
-database view]
+image::../images/mongodb_toggle_view.png[MongoDB VS Code extension connected database]
 
 If you want to create a test database with a simple insert, create a new
 playground and enter the following:
@@ -262,7 +261,7 @@ db.testCollection.insertOne({name:"hey there!"})
 That’s all you need to know for now. Let us go on and set up our walking
 skeleton.
 
-==== Set up the server-side application
+=== Set up the server-side application
 
 '''''
 
@@ -284,12 +283,12 @@ cd server
 npm init
 ----
 
-And since we want to work with safe types add a `tsconfig.json` and a
-`.env` file to the folder (Leave it empty for now).
+And since we want to work with safe types, add a `tsconfig.json` and a
+`.env` file for the connection strings to the folder (Leave it empty for now).
 
 We need some npm packages for our Express.js REST API, so install them
 in the server directory. And because we are working with typescript, we
-also need to add the types.
+also need to add the types for the packages.
 
 [source,shell]
 ----
@@ -330,7 +329,7 @@ file – typescript uses this config to compile the code we write.
 That’s all for the basic configuration. To see how to connect to the
 database and add an express route, read on to the example project.
 
-==== Set up the Angular client
+=== Set up the Angular client
 
 '''''
 
@@ -351,9 +350,9 @@ ng new client --routing --style=css
 ----
 
 When the initialization is done, we’ll have a client folder where the
-Angular app is located. We need the `--routing` flag, so a routing
-module is being generated (for the individual pages of the application)
-and `--style` makes css our default preprocessor.
+Angular app is located. We need the `--routing` flag, so that a routing
+module is being generated (for the individual pages of the application).
+`--style` makes css our default preprocessor.
 
 Now you can start the application by entering the following in your
 terminal:
@@ -372,7 +371,7 @@ For everyone that’s working with MEAN for the first time, the following
 example project is exactly what you need to learn the stack - go on
 reading!
 
-=== Let’s build an example project!
+== Let’s build an example project!
 
 The best way to learn is practice – that’s why I’ll build a recipe book
 with the MEAN stack! It is a simple CRUD-app, here a sneak-peek on what
@@ -380,12 +379,12 @@ it will look like:
 
 *TODO: Add image of application*
 
-==== Add document to MongoDB
+=== Add document to MongoDB
 
 '''''
 
 Firstly, we’ll need a document in our database where we can store the
-recipes. For that, open up a playground in your MongoDB extension and
+recipes. For that, open up a playground in your VS Code MongoDB extension or your preferred database manager and
 add a document.
 
 [source,js]
@@ -394,11 +393,14 @@ use('test');
 db.createCollection('recipes');
 ----
 
-==== Create interfaces for type safety
+That's all we need to do on the database directly.
+
+=== Create interfaces on server side for type safety
 
 '''''
 
-For type safety let us add an interface for our recipe & ingredient.
+Now let us move on to the server side application. Firstly, we need to define what a
+recipe looks like by creating a TypeScript interface for it.
 
 *mean-stack-example-app/server/src/recipe.ts*
 
@@ -416,7 +418,7 @@ export interface Recipe {
 }
 ----
 
-A recipe has a title, brief description, category, ingredients (array of
+I decided that a recipe has a title, brief description, category, ingredients (array of
 Ingredient interface), instructions and an optional `_id` which will be
 generated by MongoDB automatically.
 
@@ -435,18 +437,20 @@ export interface Ingredient {
 ----
 
 An ingredient consists of a name, quantity and unit. And again the
-optional `_id`.
+optional `_id`. That's it for our data model - not that complex but a comprehensive
+model is not the main aim of this guide.
 
-==== Connect Express to database
+=== Connect Express to database
+
+The next step is to connect our backend application to the database.
 
 '''''
 
-In our `database.ts` file we need to write the following to connect our
-database to the server:
+For that, create a `database.ts` file in the `src/` folder of the server and add the following code:
 
 *mean-stack-example-app/server/src/database.ts*
 
-[source,ts]
+[source,typescript]
 ----
 import * as mongodb from "mongodb";
 import { Recipe } from "./recipe";
@@ -471,19 +475,19 @@ the recipes from the database. If your database model has more
 collections, you can reference them in this object.
 
 The `connectToMongoDb` function handles the connection to the database
-with the native MongoClient. When calling this method we need to add a
+with the native MongoClient from mongodb. When calling this method we need to add a
 `uri` parameter, which is our connection string to the database.
 
-Because I have my collection in the ``test'' database I need to
+Because I have my collection in the `test` database I need to
 reference it in the `db` constant. Lastly, I am pulling the `recipes`
 collection from the database and set it to the recipes constant.
 
-Now we need to call the function in our `server.ts` and start the
+Now we need to call the function in our `server.ts` file and start the
 express server.
 
 *mean-stack-example-app/server/src/server.ts*
 
-[source,ts]
+[source,typescript]
 ----
 import * as dotenv from "dotenv"
 import express from "express"
@@ -515,9 +519,11 @@ connectToMongoDb(CONNECTION_URI)
 .catch(error=> console.error(error));
 ----
 
-I am referencing two variables from my `.env` file, the connection
-string to the database and the port I want to run my express server on.
-That could look something like this:
+I am referencing two variables from my `.env` file, firstly the connection
+string to the database and secondly, the port I want to run my express server on.
+Please adjust the variables according to your credentials.
+
+The `.env` file could look something like this:
 
 ....
 CONNECTION_URI=mongodb://user:password@localhost:27017/?authSource=admin&readPreference=primary&ssl=false&directConnection=true
@@ -525,17 +531,18 @@ EXPRESS_PORT=5200
 ....
 
 ____
-❗ Tip: You can get the connection string of your database by right
-clicking on the connection in the MongoDB extension->``Copy Connection
-String''.
+❗ Tip: You can obtain the connection string of your database by right-clicking
+on the connection in the VS Code MongoDB extension -> `Copy Connection String`.
 ____
 
-To catch some errors, I am checking if the variables exist, and then
+To prevent basic errors, I am checking if the variables do exist, and then
 proceed to calling the `connectToMongoDb` function with the
-`CONNECTION_URI` as a parameter. An Express server is started on the
-specified port if the connection was successful.
+`CONNECTION_URI` as a parameter. If the connection was successful, an Express server will be started on the
+specified port.
 
 Let’s see if this works. Enter this command to start the server:
+
+& don't forget to start you docker container 😉
 
 [source,shell]
 ----
@@ -549,35 +556,33 @@ Which gives the following output (if successful):
 Server running on localhost:5200
 ....
 
-Great, that’s it for our walking-skeleton! Now we can move on to create
-our first use-case: Viewing the recipes.
+Great, that’s it for the database connection! Let's move on to the backend implementation.
 
-____
-❗ Note: I work from use-case to use-case and not by architecture
-layers.
-____
-
-==== View multiple/single recipe(s)
-
-'''''
 
 For this use-case we want to fetch multiple and a single recipe from the
 database with GET requests and display them on the frontend.
 
-===== REST Endpoints
+=== Create REST Endpoints
 
 '''''
 
-Firstly, let us create the endpoints to fetch data from the database.
+Firstly, let us create the endpoints to fetch/update/delete data from the database.
 For that, I’ll use the router from express in the `recipe.routes.ts`
 file.
 
-The endpoints needed: - `/` -> GET all recipes - `/:id` -> GET one
-recipe by its id
+The endpoints needed:
+
+ - `/` -> GET all recipes
+ - `/:id` -> GET one recipe by its id
+ - `/` -> POST create a recipe
+ - `/:id` -> PUT update a recipe
+ - `/:id` -> DELETE a recipe
+
+Start by exporting a constant of the router and tell it to use json.
 
 *mean-stack-example-app/server/src/recipe.routes.ts*
 
-[source,ts]
+[source,typescript]
 ----
 import * as express from "express";
 import * as mongodb from "mongodb";
@@ -585,7 +590,17 @@ import { collections } from "./database";
 
 export const recipeRouter = express.Router();
 recipeRouter.use(express.json());
+----
 
+==== GET all/one recipe(s)
+
+To add a new route to the router, you need to call the REST-operation method
+on the router object and write an arrow function, which contains the logic.
+
+*mean-stack-example-app/server/src/recipe.routes.ts*
+
+[source, typescript]
+----
 recipeRouter.get("/", async (_req, res) => {
     try {
         const recipes = await collections.recipes.find({}).toArray();
@@ -596,22 +611,20 @@ recipeRouter.get("/", async (_req, res) => {
 });
 ----
 
-I am instantiating a `recipeRouter` which is an express router and tell
-it to use json formatting. To create a GET endpoint, I call the `get()`
-method on the router with the url and the function to be executed.
+Getting all recipes is fairly simple. I call the `get()` method on the router with the url and the arrow function to be executed.
 
 In the try block I am using my `collections.recipes` instance from the
-`database.js`, to execute a find query on the collection.
+`database.js` file, to execute a find query on the collection. The query itself is empty, because I want all my recipes.
 
-If everything went fine, we receive all recipes along with a status code
+If everything went fine, we receive all recipes in an array along with a status code
 of 200.
 
-To receive one recipe by it’s id, add the following to your
+To receive just one recipe by it’s id, add the following to your
 `recipe.routes.ts`
 
 *mean-stack-example-app/server/src/recipe.routes.ts*
 
-[source,ts]
+[source,typescript]
 ----
 recipeRouter.get("/:id",async (req, res) => {
     try {
@@ -630,20 +643,126 @@ recipeRouter.get("/:id",async (req, res) => {
 ----
 
 To find a recipe with a specified id, you need to extract it from the
-request parameter and then use it in the query.
+request parameter and then use it in the query. Pay attention that you convert the
+id to an `objectId`, otherwise the request will fail, e.g. not find anything.
 
-If something is returned from the query we return a 200 with the data,
+If something is returned from the query the method returns a 200 along with the requested recipe,
 else a 404 is sent (because no recipe exists with the id). Any other
-error runs into the catch, which sends a 500 error response.
+error runs into the catch, which sends a status code of 500.
 
-===== Register the routes
+==== POST Create a recipe
 
-'''''
+To create a recipe with a POST request, we now need to create a new endpoint
+calling the `.post()` method on the router.
 
-Currently, the Express server does not know about the recipe routes, so
-we need to help him out here.
+*mean-stack-example-app/server/src/recipe.routes.ts*
 
-In the `server.ts`, add before the `app.listen()` method:
+[source,typescript]
+----
+recipeRouter.post("/", async (req, res)=>{
+    try {
+        const recipeToInsert:Recipe = req.body;
+        const insertedRecipe = await collections.recipes.insertOne(recipeToInsert);
+        if(insertedRecipe.acknowledged) {
+            res.status(201).send(insertedRecipe)
+        } else {
+            res.status(500).json({error: "Failed to create recipe."});
+        }
+    } catch (error) {
+        res.status(400).json({error: error.message});
+    }
+})
+----
+
+The recipe the client wants to add lies in the body of the request, which
+we can access with the `.body` function. Then we call the database and tell it
+to insert the requested recipe. If it works, we send back the `insertedRecipe` object,
+which contains the id of the newly created object. Otherwise we catch the error
+and return it with a status code.
+
+==== DELETE a recipe
+
+Deleting is done by calling the `delete()` method on the router.
+We can create a method that deletes a recipe by its id:
+
+*mean-stack-example-app/server/src/recipe.routes.ts*
+
+[source, typescript]
+----
+recipeRouter.delete("/:id", async (req,res)=>{
+    try{
+        const id:string = req?.params.id;
+        const deletedRecipe = await collections.recipes.deleteOne({_id:new mongodb.ObjectId(id)});
+
+        if(deletedRecipe.deletedCount>0){
+            res.status(202).send(deletedRecipe);
+        } else if (deletedRecipe.deletedCount==0){
+            res.status(404).json({error: "No recipe with id " + id});
+        }
+    } catch (error) {
+        res.status(400).json({error: error.message});
+    }
+});
+----
+
+Again, we extract the id from the parameter and then call the database operation,
+which is a `deleteOne()` statement. When the `deletedCount` is greater than 0
+we have successfully deleted the recipe and can send a 202 (Accepted).
+
+If the count is 0, which means no recipe with the id exists, we return a 404 error.
+Any other error will be caught and sent back with a status code of 400, for example when the client
+sends an invalid id.
+
+==== PUT Update a recipe
+
+"Whoops there's a typo in my recipe - let me fix that by updating it".
+
+That's what PUT requests are for, updating an existing entity in the datastore.
+In Express we can do so by calling the `put()` function on the router.
+
+The put/update method for the recipes would look like this:
+
+*mean-stack-example-app/server/src/recipe.routes.ts*
+
+[source,typescript]
+----
+recipeRouter.put("/:id", async(req,res)=>{
+    try {
+        const id:string = req?.params.id;
+        const recipeWithChanges:Recipe = req.body;
+        const updatedRecipe = await collections.recipes.updateOne({_id:new mongodb.ObjectId(id)}, {$set: recipeWithChanges});
+
+        if (updatedRecipe.matchedCount>0 && updatedRecipe.modifiedCount>0){
+            res.status(200).send(updatedRecipe);
+        } else if (updatedRecipe.matchedCount==0){
+            res.status(404).json({error: "No recipe with id " + id});
+        } else if (updatedRecipe.matchedCount>0 && updatedRecipe.modifiedCount==0){
+            res.status(304).send(updatedRecipe);
+        }
+    } catch (error) {
+        res.status(400).json({error: error.message});
+    }
+});
+----
+
+One last time, we extract the id from the parameter and the new recipe version from the body.
+Then we run an `updateOne()` query on the recipe collection to apply the changes the client wants.
+
+If the update was successful (found a recipe and made some changes), a status code of 200 and the query result is sent.
+If the query hasn't been able to find a recipe, a 404 is sent, and if the database didn't have to make any changes, because
+the new and old version are the same, a 304 (Not modified) is sent to the client.
+
+And that's it for the routes, we have all the CRUD operations ready to be consumed
+by the frontend!
+
+=== Register the routes
+
+Just one more thing for the backend, then we can start building the Angular app 😅.
+
+Currently, the Express server does not know about the recipe routes because we
+did not register them, so we need to help him out here.
+
+In the `server.ts`, before the `app.listen()` method call, add:
 
 *mean-stack-example-app/server/src/server.ts*
 
@@ -652,9 +771,9 @@ In the `server.ts`, add before the `app.listen()` method:
 app.use("/recipes", recipeRouter);
 ----
 
-Dont forget to restart your server after modifying the file!
+Don't forget to restart your server after modifying this file!
 
-===== Create interfaces on client
+=== Create interfaces on client
 
 '''''
 

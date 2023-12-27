@@ -167,11 +167,11 @@ To bind our container port to our machine port we use the `-p` (port) option. We
 To test if our container works, we can open up VS Code and connect to our database using the MongoDB extension. Just click on the ‘Add a connection’ button and choose ‘Connection Settings’ – which will open a form to specify the connection.
 
 
-![MongoDB VS Code extension set up form](/assets/mongodb_form.png)
+![MongoDB VS Code extension set up form](/mean-stack-starters-guide/asciidoctor-diplomathesis/src/main/images/mongodb_form.png)
 
 Enter the username and password from the docker run command and hit connect! Now you should see the connection in the sidebar and its databases when expanding the toggle.
 
-![MongoDB VS Code extension database view](/assets/mongodb_toggle_view.png)
+![MongoDB VS Code extension database view](/mean-stack-starters-guide/asciidoctor-diplomathesis/src/main/images/mongodb_toggle_view.png)
 
 If you want to create a test database with a simple insert, create a new playground and enter the following:
 
