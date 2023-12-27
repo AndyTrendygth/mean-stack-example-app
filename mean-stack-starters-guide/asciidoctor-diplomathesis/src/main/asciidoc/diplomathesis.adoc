@@ -1,0 +1,126 @@
+= Diploma Thesis : title
+Joachim GRÜNEIS <grueneis@spengergasse.at>; Klaus UNGER <unger@spengergasse.at>
+v1.0, 2018-06-18
+
+:doctype: book
+
+:toc:
+:toc-title: Table of content
+:toclevels: 3
+
+:blankline: pass:[ +]
+
+[colophon, right]
+== Colophon
+
+{blankline}
+
+*Spengergasse Press, Vienna*
+
+(C) 2018 by Joachim GRÜNEIS, Klaus UNGER
+
+{blankline}
+
+*Schuljahr 2018/19*
+
+.Abgabevermerk
+[cols="50,50", options="header"]
+|===
+|Datum:
+|übernommen von:
+
+|{blankline}
+ {blankline}
+|{blankline}
+ {blankline}
+|===
+
+[eidesstattliche-erklaerung]
+== Eidesstattliche Erklärung
+
+Ich erkläre an Eides statt, dass ich die vorliegende Diplomarbeit selbständig
+und ohne fremde Hilfe verfasst, andere als die angegebenen Quellen und
+Hilfsmittel nicht benutzt und die den benutzten Quellen wörtlich und
+inhaltlich entnommenen Stellen als solche erkenntlich gemacht habe.
+
+[cols="30,70", options="header"]
+|===
+|Wien, am 08.04.2019
+|VerfasserInnen
+
+|{blankline}
+|{blankline}
+ {blankline}
+ {blankline}
+ Joachim GRÜNEIS
+
+|{blankline}
+|{blankline}
+ {blankline}
+ {blankline}
+ Klaus UNGER
+|===
+
+[abstract]
+== Abstract
+
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+
+Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+
+Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.
+
+<<<
+
+include::chapters/01-personal-topic-grueneis.adoc[]
+
+<<<
+
+include::chapters/02-personal-topic-unger.adoc[]
+
+<<<
+
+[glossary]
+== Glossary
+
+software:: invisible
+hardware:: accessible
+
+<<<
+
+[bibliography]
+== References
+
+- [[[pp]]] Andy Hunt & Dave Thomas. The Pragmatic Programmer:
+  From Journeyman to Master. Addison-Wesley. 1999.
+
+<<<
+
+[index]
+== Index
+
+<<<
+
+[appendix]
+== Appendix
+
+:appendix-caption: Appendix
+:sectnums:
+
+=== The schema behind the data
+
+[source,json]
+----
+{
+  "bla": "bla"
+}
+----
+
+[source,java]
+----
+public class HelloWorld {
+
+  public static void main(String[] args) {
+  }
+}
+----

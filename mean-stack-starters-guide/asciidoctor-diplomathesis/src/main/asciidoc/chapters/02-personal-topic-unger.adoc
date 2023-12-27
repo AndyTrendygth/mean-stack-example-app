@@ -1,0 +1,182 @@
+[Section]
+== About *Software Engineering*
+
+Klaus UNGER <unger@spengergasse.at>
+
+:toc:
+
+== History and hard facts
+
+Well you have to write something
+
+=== Mindset
+
+_The Pragmatic Programmer_ <<pp>> is one of the most influencing books.
+
+=== Portfolio
+
+The Lady of the Lake, her arm clad in the purest shimmering samite,
+held aloft Excalibur from the bosom of the water,
+signifying by divine providence that I, ((Arthur)),
+was to carry Excalibur (((Sword, Broadsword, Excalibur))).
+That is why I am your king. Shut up! Will you shut up?!
+Burn her anyway! I'm not a witch.
+Look, my liege! We found them.footnote:[Hello]
+
+WARNING: Warning
+
+TIP: Tip
+
+IMPORTANT: Important
+
+CAUTION: Caution
+
+NOTE: Note
+
+[IMPORTANT]
+.Feeding the Werewolves
+====
+While werewolves are hardy community members, keep in mind the following dietary concerns:
+
+. They are allergic to cinnamon.
+. More than two glasses of orange juice in 24 hours makes them howl in harmony with alarms and sirens.
+. Celery makes them sad.
+====
+
+== Diagramming
+
+== Class Diagram
+
+[plantuml, generated/Collab, svg]
+----
+@startuml
+abstract class AbstractList
+abstract AbstractCollection
+interface List
+interface Collection
+
+List <|-- AbstractList
+Collection <|-- AbstractCollection
+
+Collection <|- List
+AbstractCollection <|- AbstractList
+AbstractList <|-- ArrayList
+
+class ArrayList {
+Object[] elementData
+size()
+}
+
+enum TimeUnit {
+DAYS
+HOURS
+MINUTES
+}
+@enduml
+----
+
+== Component
+
+[plantuml, generated/HighLevelArch, svg]
+----
+@startuml
+
+package "Some Group" {
+HTTP -up- [First Component]
+[Another Component] -up-> HTTP
+}
+
+package "Other Groups" {
+FTP -up- [Second Component]
+
+[First Component] -up-> FTP
+}
+
+@enduml
+----
+
+== WorkBreakDown
+
+[plantuml, generated/WBS, svg]
+----
+@startwbs
+* Business Process Modelling WBS
+** Launch the project
+*** Complete Stakeholder Research
+*** Initial Implementation Plan
+** Design phase
+*** Model of AsIs Processes Completed
+**** Model of AsIs Processes Completed1
+**** Model of AsIs Processes Completed2
+*** Measure AsIs performance metrics
+*** Identify Quick Wins
+** Complete innovate phase
+@endwbs
+----
+
+== Entity Relationship Diagram
+
+[plantuml, generated/ER, svg]
+----
+@startuml
+
+Entity01 }|..|| Entity02
+Entity03 }o..o| Entity04
+Entity05 ||--o{ Entity06
+Entity07 |o--|| Entity08
+
+@enduml
+----
+
+== Gantt
+
+[plantuml, generated/Gantt, svg]
+----
+@startgantt
+[Prototype design] lasts 15 days
+[Test prototype] lasts 10 days
+@endgantt
+----
+
+== AsciiMath
+
+[plantuml, generated/AsciiMath, svg]
+----
+@startlatex
+\sum_{i=0}^{n-1} (a_i + b_i^2)
+@endlatex
+----
+
+== DOT
+
+[plantuml, generated/DOT, svg]
+----
+@startdot
+digraph foo {
+  node [style=rounded]
+  node1 [shape=box]
+  node2 [fillcolor=yellow, style="rounded,filled", shape=diamond]
+  node3 [shape=record, label="{ a | b | c }"]
+
+  node1 -> node2 -> node3
+}
+@enddot
+----
+
+== Ditaa
+
+[ditaa, generated/Ditaa, png]
+----
+@startditaa
++--------+   +-------+    +-------+
+|        +---+ ditaa +--> |       |
+|  Text  |   +-------+    |Diagram|
+|Dokument|   |!Magie!|    |       |
+|     {d}|   |       |    |       |
++---+----+   +-------+    +-------+
+	:                         ^
+	|    Ein Haufen Arbeit    |
+	+-------------------------+
+@endditaa
+----
+
