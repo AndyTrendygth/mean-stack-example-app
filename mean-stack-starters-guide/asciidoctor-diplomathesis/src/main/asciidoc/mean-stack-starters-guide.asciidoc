@@ -904,13 +904,13 @@ taking care of the `attribute?` headache in TypeScript. For our application
 we can specify the `<Recipe>` type on the methods - so the application assumes that the response is of type
 recipe.
 
-If you don't have interfaces for a third-party API or just want a workaround, you can simply add the `<unknown>` type,
+If you don't have an interface for a third-party API or just want a workaround, you can simply add the `<unknown>` type,
 which is, as stated in the Angular Docs, a better approach than the `<any>` type.
 
 All of these patterns make it a lot easier to work with the service on a component level,
 which we’ll take a look at now.
 
-==== Create Angular component
+==== List all recipes component
 
 '''''
 
@@ -998,7 +998,7 @@ In earlier versions of Angular you had to write syntax inside the html
 tag itself (for example `*ngFor`), which makes it really confusing to
 use when writing a bit more complex display logic. But thankfully the
 Angular development team noticed that issue and you can now use @for,
-@if,… statements in your components!
+@if etc. statements in your components!
 
 This component uses @for to render a recipe card for each recipe inside
 the recipes list, and a loop to render the ingredients.
