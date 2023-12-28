@@ -755,7 +755,7 @@ the new and old version are the same, a 304 (Not modified) is sent to the client
 And that's it for the routes, we have all the CRUD operations ready to be consumed
 by the frontend!
 
-=== Register the routes
+==== Register the routes
 
 Just one more thing for the backend, then we can start building the Angular app 😅.
 
@@ -773,10 +773,17 @@ app.use("/recipes", recipeRouter);
 
 Don't forget to restart your server after modifying this file!
 
-=== Create interfaces on client
+=== Finally, the frontend (Angular)
+
+For all my frontend gurus, now the fun part for you;)
+Leave your Express server and Docker container running and switch over
+to your client directory - that's where everything will happen now.
+
+==== Create interfaces on client
 
 '''''
 
+To follow our type-safe principle, we need to establish types on the client as well.
 We already created interfaces for the server and now we need them on our
 client too.
 
@@ -822,21 +829,23 @@ export interface Recipe {
 
 Notice the difference from the server interfaces in the id attribute
 (it’s just a string!) and all fields have a `?' so typescript doesn’t
-throw any errors.
+throw any errors because of nullable fields.
 
-===== Create service to communicate with Express API
+==== Create service to communicate with Express API
 
 '''''
 
 Next we’ll create an Angular service that handles the communication with
-our API, we do this to seperate the logic from the presentation layer.
+our API, an extra service separates the logic from the presentation layer.
 
 Using the `ng generate service recipe` command, we can automatically
 generate a boilerplate service class with a test (we’ll need that later
-on). In the service file, we can add the following to fetch some data
-from the api:
+on).
 
-*mean-stack-example-app/client/src/app/recipe.ts*
+In the service file, we can add the following methods to call our backend
+endpoints.
+
+*mean-stack-example-app/client/src/app/recipe.service.ts*
 
 [source,ts]
 ----
@@ -856,7 +865,18 @@ export class RecipeService {
   getSingleRecipe(id:String){
     return this.http.get<Recipe>(this.url+"/"+id);
   }
-  
+
+  createRecipe(recipe:Recipe){
+    return this.http.post<unknown>(this.url+"/", recipe);
+  }
+
+  deleteRecipe(id:string){
+    return this.http.delete<unknown>(this.url+"/"+id);
+  }
+
+  updateRecipe(id:string, recipe:Recipe){
+    return this.http.put<unknown>(this.url+"/"+id, recipe);
+  }
 }
 ----
 
@@ -865,16 +885,32 @@ class needs to be annotated with the `@Injectable` annotation. The
 constructor instantiates the `HttpClient` object, which handles the
 request logic - this is a feature from Angular directly.
 
-Then we have the two methods for fetching data from the API, one that
-queries all recipes and one that returns a single recipe. Because we
-want to enforce safe types, we can specify the `<Recipe>` type on the
-`get()` method - so the application assumes that the response is of type
+Why do we need to call the module through the constructor? Because
+of dependency injection, a design pattern that is used by default in Angular.
+This pattern creates more flexibility and modularity in the app, which is great.
+
+The rest of the service consists of the 5 methods for making calls to the API.
+
+What each method does, should be clear from the function names.
+To use the HTTP client, you can simply write `this.http.[method]<type>` with the route
+and needed data for the request.
+
+Compared to other JavaScript frameworks this approach is a super
+convenient way (and I think the best) to handle http requests equally across the app -
+no more `await fetch()...` calls spread across the components 🥰.
+
+Moreover, it's great that you can tell Angular of which type the response will be,
+taking care of the `attribute?` headache in TypeScript. For our application
+we can specify the `<Recipe>` type on the methods - so the application assumes that the response is of type
 recipe.
 
-That makes it a lot easier to work with, especially when using the
-methods in the component - which we’ll take a look at now.
+If you don't have interfaces for a third-party API or just want a workaround, you can simply add the `<unknown>` type,
+which is, as stated in the Angular Docs, a better approach than the `<any>` type.
 
-===== Create Angular component
+All of these patterns make it a lot easier to work with the service on a component level,
+which we’ll take a look at now.
+
+==== Create Angular component
 
 '''''
 

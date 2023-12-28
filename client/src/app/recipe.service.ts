@@ -18,5 +18,17 @@ export class RecipeService {
   getSingleRecipe(id:String){
     return this.http.get<Recipe>(this.url+"/"+id);
   }
-  
+
+  createRecipe(recipe:Recipe){
+    return this.http.post<unknown>(this.url+"/", recipe);
+  }
+
+  deleteRecipe(id:string){
+    return this.http.delete<unknown>(this.url+"/"+id);
+  }
+
+  updateRecipe(id:string, recipe:Recipe){
+    return this.http.put<unknown>(this.url+"/"+id, recipe);
+  }
+
 }
