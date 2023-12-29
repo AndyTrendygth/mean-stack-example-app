@@ -1,19 +1,22 @@
 <div class="p-8">
-<header class="my-6">
+<header class="my-6 flex items-start gap-6">
+  <div>
     <h1 class="text-3xl font-bold">Tasty Recipe List </h1>
     <h2 class="text-sm text-blue-500">by Andy</h2>
+  </div>
+    <a routerLink="/recipes/add" class="bg-blue-500 text-neutral-50 px-2 py-1 rounded-lg hover:shadow-xl transition-all">Add a new Recipe +</a>
 </header>
 
 <main>
     <div class="recipe-list flex gap-6">
-      <a href="/add">Add a new Recipe</a>
+
     @for (recipe of recipes; track recipe) {
         <div class="recipe flex max-w-80 flex-col gap-2 shadow-lg p-3 rounded-lg hover:shadow-xl hover:cursor-pointer transition-all bg-neutral-50">
-            <div class="flex items-baseline justify-between flex-wrap">
-            <h2 class="text-xl font-medium"><a href="/recipes/{{recipe._id}}">{{ recipe.title }}</a></h2>
-            <div class="flex gap-2">
-            <a href="/edit/{{recipe._id}}" >Edit</a>
-            <button class=" text-red-500 bg-red-300 px-2 py-1" (click)="deleteRecipe(recipe._id)" >Delete</button>
+            <div class="flex items-center justify-between flex-wrap">
+            <h2 class="text-xl font-medium"><a routerLink="/recipes/view/{{recipe._id}}">{{ recipe.title }}</a></h2>
+            <div class="flex gap-2 items-center">
+            <a routerLink="/recipes/edit/{{recipe._id}}" class="text-neutral-500" >Edit</a>
+            <button class=" text-red-500 rounded-lg bg-red-300 px-2 py-1" (click)="deleteRecipe(recipe._id)" >Delete</button>
             </div>
             </div>
             <div class="w-min text-nowrap category rounded-xl bg-blue-200 text-blue-500 px-2 py-1 text-sm ">{{ recipe.category }}</div>
@@ -31,4 +34,7 @@
     }
     </div>
 </main>
+
 </div>
+
+

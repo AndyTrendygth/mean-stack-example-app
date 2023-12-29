@@ -808,7 +808,7 @@ Open up the files and add the interface specification to them:
 export interface Ingredient {
     name?: string;
     quantity?: number;
-    unit?: number;
+    unit?: string;
     _id?: string;
 }
 ----
@@ -841,6 +841,17 @@ our API, an extra service separates the logic from the presentation layer.
 Using the `ng generate service recipe` command, we can automatically
 generate a boilerplate service class with a test (we’ll need that later
 on).
+
+Before implementing the service, add the following to your `app.config.ts` file:
+
+[source,typescript]
+----
+export const appConfig: ApplicationConfig = {
+  providers: [provideRouter(routes), provideClientHydration(), provideHttpClient(withFetch())]
+};
+----
+
+Adding these providers enables the `HttpClient` and the `Router`.
 
 In the service file, we can add the following methods to call our backend
 endpoints.
@@ -963,16 +974,26 @@ file:
 [source,html]
 ----
 <div class="p-8">
-<header class="my-6">
+<header class="my-6 flex items-start gap-6">
+  <div>
     <h1 class="text-3xl font-bold">Tasty Recipe List </h1>
     <h2 class="text-sm text-blue-500">by Andy</h2>
+  </div>
+    <a routerLink="/recipes/add" class="bg-blue-500 text-neutral-50 px-2 py-1 rounded-lg hover:shadow-xl transition-all">Add a new Recipe +</a>
 </header>
 
 <main>
     <div class="recipe-list flex gap-6">
+
     @for (recipe of recipes; track recipe) {
-        <div class="recipe flex flex-col gap-2 shadow-lg p-3 rounded-lg hover:shadow-xl hover:cursor-pointer transition-all bg-neutral-50">
-            <h2 class="text-xl font-medium"><a href="/recipes/{{recipe._id}}">{{ recipe.title }}</a></h2>
+        <div class="recipe flex max-w-80 flex-col gap-2 shadow-lg p-3 rounded-lg hover:shadow-xl hover:cursor-pointer transition-all bg-neutral-50">
+            <div class="flex items-center justify-between flex-wrap">
+            <h2 class="text-xl font-medium"><a routerLink="/recipes/{{recipe._id}}">{{ recipe.title }}</a></h2>
+            <div class="flex gap-2 items-center">
+            <a routerLink="/recipes/edit/{{recipe._id}}" class="text-neutral-500" >Edit</a>
+            <button class=" text-red-500 rounded-lg bg-red-300 px-2 py-1" (click)="deleteRecipe(recipe._id)" >Delete</button>
+            </div>
+            </div>
             <div class="w-min text-nowrap category rounded-xl bg-blue-200 text-blue-500 px-2 py-1 text-sm ">{{ recipe.category }}</div>
             <p>{{ recipe.description }}</p>
             <div class="ingredients line-clamp-3 p-1 text-neutral-400">
@@ -985,25 +1006,26 @@ file:
                 }
             </div>
         </div>
-    } 
+    }
     </div>
 </main>
 </div>
 ----
 
-Most of the code is for styling purposes, except the data references and
+A big chunk of the code is for styling purposes (Tailwind 😉), except the data references and
 the brand-new syntax for html-logic in Angular 17!
 
 In earlier versions of Angular you had to write syntax inside the html
 tag itself (for example `*ngFor`), which makes it really confusing to
 use when writing a bit more complex display logic. But thankfully the
-Angular development team noticed that issue and you can now use @for,
-@if etc. statements in your components!
+Angular development team noticed that issue, and you can now use @for,
+@if, etc. statements in your components!
 
 This component uses @for to render a recipe card for each recipe inside
-the recipes list, and a loop to render the ingredients.
+the recipes list, and a loop to render the ingredients. It also contains the html
+logic for all our features: viewing, editing, adding and updating recipes, we'll build these in the following steps.
 
-To reference a variable from your component.ts file, you need to add two
+To reference a variable of your component.ts file, you need to add two
 curly brackets `{{variable}}` surrounding the variable name. Of course
 the variable needs to be defined, which I did in the
 `recipe-list.component.ts` file:
@@ -1016,11 +1038,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Recipe } from '../recipe';
 import { RecipeService } from '../recipe.service';
+import {RouterLink} from "@angular/router";
 
 @Component({
   selector: 'app-recipe-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './recipe-list.component.html',
   styleUrl: './recipe-list.component.css'
 })
@@ -1043,19 +1066,21 @@ export class RecipeListComponent implements OnInit{
 ----
 
 In a nutshell, this code fetches the data and loads it into a variable,
-so the html file can use it. For that, we are calling our
+so the html file can use it. For that, we are subscribing to our
 `getAllRecipes()` function from the `RecipeService` and set the recipes
-variable to the result of the method request.
+variable to the result of the method.
 
 Since we always want the freshest data from the database we’ll use the
-`OnInit` interface, which whenever we access the `/recipes` page calls
-the `ngOnInit()` function. And that function calls our load function to
+`OnInit` interface, which whenever we access the `/recipes` route calls
+the `ngOnInit()` function (similar to `useEffect()` in React). And that function calls our load function to
 receive and display the newest data.
 
 With all that (fine seperated!) code, we get something that looks like
 this:
 
-image::/assets/recipe-list.png[Recipe List Component View]
+image::../images/recipe-list.png[Recipe List Component View]
+
+==== Detail view of a single recipe component
 
 If you looked closely, you may have noticed the link in the title of the
 recipe. For this link to work, we need another component which displays
@@ -1078,15 +1103,17 @@ The `:id` is a placeholder for the dynamic id each recipe has.
 
 And a bit more configuration: Since we’re using these dynamic ids, we
 need to tell Angular that, otherwise it won’t work. Inside your
-`app.config.ts`, add the following parameter to your `provideRouter()`
+`app.config.ts`, add the `withComponentInputBinding()` parameter to your `provideRouter()`
 function:
+
+*mean-stack-example-app/client/src/app/app.config.ts*
 
 [source,ts]
 ----
 provideRouter(routes, withComponentInputBinding())
 ----
 
-Great! Now we can work out the component logic for a single recipe.
+Great! Now we can work out the component logic for viewing a single recipe.
 
 *mean-stack-example-app/client/src/app/recipe/recipe.component.ts*
 
@@ -1118,7 +1145,7 @@ The `set id()` function handles the data fetching using our service. You
 need to name the function like the parameter you specified in the
 routes, so Angular knows what you mean.
 
-And that’s all! The html is pretty easy as well:
+And that’s all! The html is pretty easy too:
 
 *mean-stack-example-app/client/src/app/recipe/recipe.component.html*
 
@@ -1140,4 +1167,39 @@ And that’s all! The html is pretty easy as well:
     </div>
     <p class="max-w-96">{{recipe.instructions}}</p>
 </div>
+----
+
+Again, we're using the variables from the component and listing them with
+a for loop - that's it.
+
+==== Adding a recipe
+
+Adding a recipe needs a seperate component as well, because it will live
+on a seperate page. Create a new component with:
+
+[source,shell]
+----
+ng generate component recipe-add
+----
+
+And add the route to `app.routes.ts`:
+
+*mean-stack-example-app/client/src/app/app.routes.ts*
+
+[source, typescript]
+----
+{path: 'recipes/add', component: RecipeAddComponent},
+----
+
+Adding a new recipe has a few caveats:
+
+- Category selection
+- Adding multiple ingredients
+
+But let's look at how Angular can help us tackle these problems. I'd like
+to write the logic first and then display it. So in your `recipe-add.component.ts` write:
+
+[source, typescript]
+----
+
 ----
