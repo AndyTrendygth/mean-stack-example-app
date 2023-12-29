@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Recipe } from './recipe';
 import { HttpClient } from '@angular/common/http';
+import {AddRecipeRequest} from "./addRecipeRequest";
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,7 @@ export class RecipeService {
     return this.http.get<Recipe>(this.url+"/"+id);
   }
 
-  createRecipe(recipe:Recipe){
+  createRecipe(recipe:AddRecipeRequest){
     return this.http.post<unknown>(this.url+"/", recipe);
   }
 

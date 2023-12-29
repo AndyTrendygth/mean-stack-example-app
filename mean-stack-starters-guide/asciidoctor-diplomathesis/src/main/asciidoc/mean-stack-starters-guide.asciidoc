@@ -1197,9 +1197,233 @@ Adding a new recipe has a few caveats:
 - Adding multiple ingredients
 
 But let's look at how Angular can help us tackle these problems. I'd like
-to write the logic first and then display it. So in your `recipe-add.component.ts` write:
+to write the logic first and then display it. So in your `recipe-add.component.ts`, write:
+
+*mean-stack-example-app/client/src/app/recipe-add/recipe-add.component.ts*
+
 
 [source, typescript]
 ----
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {FormBuilder, Validators, FormArray, ReactiveFormsModule} from "@angular/forms";
+import {Router, RouterLink} from "@angular/router";
+import {RecipeService} from "../recipe.service";
+import {AddRecipeRequest} from "../addRecipeRequest";
+
+@Component({
+  selector: 'app-recipe-add',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  templateUrl: './recipe-add.component.html',
+  styleUrl: './recipe-add.component.css'
+})
+export class RecipeAddComponent {
+
+  constructor(private fb: FormBuilder, private recipeService: RecipeService, private router:Router) {
+  }
+
+  categories: string[] = ['breakfast', 'main course', 'snack', 'dessert'];
+  requestFailed: boolean = false;
+
+  addRecipeForm =
+    this.fb.group({
+      title: ['', Validators.required],
+      description: ['', Validators.required],
+      category: ['', Validators.required],
+      ingredients: this.fb.array([]),
+      instructions: ['', [Validators.required, Validators.minLength(10)]]
+    });
+
+  get ingredients(): FormArray {
+    return this.addRecipeForm.get('ingredients') as FormArray;
+  }
+
+  addIngredient(): void {
+    this.ingredients.push(this.fb.group({
+      name: ['', Validators.required],
+      quantity: ['', [Validators.required, Validators.min(0)]],
+      unit: ['', [Validators.required, Validators.minLength(1)]]
+    }))
+  }
+
+  removeIngredient(index: number): void {
+    this.ingredients.removeAt(index);
+  }
+
+  createRecipe(): void {
+    if (this.addRecipeForm.valid) {
+      this.requestFailed=false;
+      const recipeData: any = this.addRecipeForm.value;
+
+      const newRecipe: AddRecipeRequest = {
+        title: recipeData.title,
+        description: recipeData.description,
+        category: recipeData.category,
+        ingredients: recipeData.ingredients,
+        instructions: recipeData.instructions
+      };
+
+      this.recipeService.createRecipe(newRecipe).subscribe((res:any) => {
+        if(res.insertedId!=null){
+          this.router.navigate(["/recipes"]);
+        } else {
+          this.requestFailed=true;
+        }
+      });
+    }
+  }
+
+}
+----
+
+Well that's quite a bit of code - let's go top down to explain everything.
+
+To bind a form to some variables we use
+Angulars FormBuilder, which is very handy because it is super easy to
+add validations and group the variables nicely in one object. The validations come
+from Angular directly as well, there are a lot of prebuilt ones, but you can also write your
+own - for this guide, the base ones will be enough. So, everything is
+in the `addRecipeForm` object - the ingredients are an exception.
+
+That's because ingredients are dynamic, one recipe can have a variable number
+of them. So we need a `FormArray` and some methods to control the elements:
+
+- `addIngredient` pushes a new ingredient object to the ingredients array
+- `get ingredients()` returns the current ingredients of the form
+- `removeIngredient(index: number)` removes the ingredient with the given index
+
+You'll see in a second how we use these methods in the html - I must say I am
+incredibly astonished how well forms in Angular work, especially with complex form logic, and must say the best I have seen in my experience.
+
+The `createRecipe()` method puts everything together and calls the service method.
+If the request was successful, the user is being redirected to the `/recipes` page
+- where he can see his delicious new recipe! Else, the `requestFailed` variable
+is set to `true`, which triggers an error message to be displayed in the html.
+
+That's it for the logic, now the presentation:
+
+*mean-stack-example-app/client/src/app/recipe-add/recipe-add.component.html*
+
+[source, angular2html]
+----
+<div class="p-8">
+  <header class="my-6 flex flex-col items-start gap-6">
+    <a routerLink="/recipes" class="text-sm underline">🏠Back to home</a>
+    <h1 class="text-3xl font-bold">Create a new Recipe</h1>
+  </header>
+  <main>
+    <form [formGroup]="addRecipeForm" class="w-1/3" (submit)="createRecipe()">
+      <div class="flex flex-col gap-1 pb-4">
+        <label for="title" class="text-neutral-400">Title </label>
+        <input id="title" type="text" formControlName="title" class="border-2 rounded-md">
+      </div>
+
+      <div class="flex flex-col gap-1 pb-4">
+        <label for="description" class="text-neutral-400">Description </label>
+        <textarea id="description" type="text" formControlName="description" class="border-2 rounded-md"></textarea>
+      </div>
+
+      <div class="flex flex-col gap-1 pb-4">
+        <label for="category" class="text-neutral-400">Category </label>
+        <select id="category" formControlName="category" class="border-2 rounded-md">
+          @for(category of categories; track category) {
+            <option [value]="category">{{category}}</option>
+          }
+        </select>
+      </div>
+
+      <div class="flex flex-col gap-1 pb-4" formArrayName="ingredients">
+        <h3 class="text-base text-neutral-400 mb-3">Ingredients</h3>
+
+        @for(ingredient of ingredients.controls; track ingredient; let index = $index){
+        <div class="flex flex-col gap-3 mb-4" [formGroupName]="index">
+          <div class="flex flex-col gap-1">
+            <label for="ingredient-name-{{index}}" class="text-neutral-400">Name</label>
+            <input id="ingredient-name-{{index}}" type="text" formControlName="name" placeholder="Name" class="border-2 rounded-md">
+           </div>
+           <div class="flex flex-row justify-between items-end">
+           <div class="flex flex-col gap-1">
+           <label for="ingredient-quantity-{{index}}" class="text-neutral-400">Quantity</label>
+            <input id="ingredient-quantity-{{index}}" type="number" formControlName="quantity" placeholder="1" class="border-2 rounded-md">
+          </div>
+          <div class="flex flex-col gap-1">
+           <label for="ingredient-unit-{{index}}" class="text-neutral-400">Unit</label>
+            <input id="ingredient-unit-{{index}}" type="text" formControlName="unit" placeholder="ml" class="border-2 rounded-md">
+          </div>
+          <button type="button" (click)="removeIngredient(index)" class="text-red-500 rounded-lg bg-red-300 px-2 py-1">Delete</button>
+           </div>
+        </div>
+        }
+
+        <button type="button" (click)="addIngredient()" class="bg-blue-500 text-neutral-50 px-2 py-1 rounded-lg hover:shadow-xl transition-all">Add ingredient +</button>
+      </div>
+
+      <div class="flex flex-col gap-1 pb-4">
+        <label for="instructions" class="text-neutral-400">Instructions </label>
+        <textarea id="instructions" type="text" formControlName="instructions" class="border-2 rounded-md"></textarea>
+      </div>
+
+      <button type="submit" [disabled]="!addRecipeForm.valid" class="bg-blue-500 text-neutral-50 px-2 py-1 rounded-lg hover:shadow-xl transition-all disabled:bg-blue-200 disabled:hover:shadow-none">Create Recipe</button>
+      @if(requestFailed) {
+        <p class="text-red-500 my-2">Adding recipe failed - Please try again.</p>
+      }
+    </form>
+  </main>
+</div>
 
 ----
+
+The biggest part of the page is, of course, the form. To bind the form
+variable we need the `[formGroup]="addRecipeForm"` attribute. On submit,
+the function inside the submit attribute `(submit)="createRecipe()"` will be called,
+for this case, to create a recipe.
+
+For an input to be mapped to its corresponding variable, you need to set the
+`formControlName` attribute on the `<input>` to the variable name.
+
+That's the same for a select field, too (categories), but we also need
+to loop over the options - which is an array in the component file.
+
+Now the tricky part - the dynamic ingredients. Since these are an array
+the parent div needs to be addressed with the `formArrayName` attribute. Then
+you can loop over all the ingredients currently in the list (which will be zero at the beginning).
+
+For Angular not to throw any errors, you need to set the `[formGroupName]="index"`
+to the index of the array - if you have an id or something else unique, you can use that as well.
+But then, same as before, add the `formControlName` to the inputs, and you're good to go!
+
+And don't forget to make the `input` id unique, for example like I did, by
+adding the index to it `ingredient-name-{{index}}`.
+
+Since the user may want to add more ingredients, we need a button that
+adds more input fields. We have already written the method which pushes
+an object to our array, so only the binding is missing - just do so by
+setting the `(click)="addIngredient()"` directive.
+
+Lastly, we need a button to submit the form, which has one special ability -
+being disabled if the form is not valid. Because we already have our validations in place,
+we just need to call `addRecipeForm.valid"` on the form, which returns
+us a boolean whether all checks have passed or not. Just set the result on
+the `[disabled]` attribute and the user won't be able to submit a falsy form!
+
+And that's the result 🥳:
+
+image::../images/create-recipe.png[Create Recipe Form]
+
+==== Delete a recipe
+
+Something easy in-between: deleting a recipe. HTML wise we've got everything
+ready - if you forgot to add the delete button, here again:
+
+*mean-stack-example-app/client/src/app/recipe-add/recipe.component.html*
+
+[source, angular2html]
+----
+<button class=" text-red-500 rounded-lg bg-red-300 px-2 py-1" (click)="deleteRecipe(recipe._id)" >Delete</button>
+----
+
+When the button is clicked, the function `deleteRecipe(recipe._id)` with the recipe id
+is called, so let's look at the implementation for that.
+
+TODO

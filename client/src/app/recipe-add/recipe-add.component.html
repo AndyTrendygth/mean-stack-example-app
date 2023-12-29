@@ -4,7 +4,7 @@
     <h1 class="text-3xl font-bold">Create a new Recipe</h1>
   </header>
   <main>
-    <form [formGroup]="addRecipeForm" class="w-1/3" >
+    <form [formGroup]="addRecipeForm" class="w-1/3" (submit)="createRecipe()">
       <div class="flex flex-col gap-1 pb-4">
         <label for="title" class="text-neutral-400">Title </label>
         <input id="title" type="text" formControlName="title" class="border-2 rounded-md">
@@ -25,24 +25,28 @@
       </div>
 
       <div class="flex flex-col gap-1 pb-4" formArrayName="ingredients">
-        <h3 class="text-base text-neutral-400">Ingredients</h3>
+        <h3 class="text-base text-neutral-400 mb-3">Ingredients</h3>
 
         @for(ingredient of ingredients.controls; track ingredient; let index = $index){
-        <div class="flex justify-between mb-4">
-        <div class="flex flex-col gap-1">
-          <label for="ingredient-name-{{index}}" class="text-neutral-400">Name</label>
-          <input id="ingredient-name-{{index}}" type="text" formControlName="name" placeholder="Name" class="border-2 rounded-md">
-         </div>
-         <div class="flex flex-col gap-1">
-         <label for="ingredient-quantity-{{index}}" class="text-neutral-400">Quantity</label>
-          <input id="ingredient-quantity-{{index}}" type="number" formControlName="quantity" placeholder="1" class="border-2 rounded-md">
-        </div>
-        <div class="flex flex-col gap-1">
-         <label for="ingredient-unit-{{index}}" class="text-neutral-400">Unit</label>
-          <input id="ingredient-unit-{{index}}" type="text" formControlName="unit" placeholder="ml" class="border-2 rounded-md">
-        </div>
+        <div class="flex flex-col gap-3 mb-4" [formGroupName]="index">
+          <div class="flex flex-col gap-1">
+            <label for="ingredient-name-{{index}}" class="text-neutral-400">Name</label>
+            <input id="ingredient-name-{{index}}" type="text" formControlName="name" placeholder="Name" class="border-2 rounded-md">
+           </div>
+           <div class="flex flex-row justify-between items-end">
+           <div class="flex flex-col gap-1">
+           <label for="ingredient-quantity-{{index}}" class="text-neutral-400">Quantity</label>
+            <input id="ingredient-quantity-{{index}}" type="number" formControlName="quantity" placeholder="1" class="border-2 rounded-md">
+          </div>
+          <div class="flex flex-col gap-1">
+           <label for="ingredient-unit-{{index}}" class="text-neutral-400">Unit</label>
+            <input id="ingredient-unit-{{index}}" type="text" formControlName="unit" placeholder="ml" class="border-2 rounded-md">
+          </div>
+          <button type="button" (click)="removeIngredient(index)" class="text-red-500 rounded-lg bg-red-300 px-2 py-1">Delete</button>
+           </div>
         </div>
         }
+
         <button type="button" (click)="addIngredient()" class="bg-blue-500 text-neutral-50 px-2 py-1 rounded-lg hover:shadow-xl transition-all">Add ingredient +</button>
       </div>
 
@@ -52,6 +56,9 @@
       </div>
 
       <button type="submit" [disabled]="!addRecipeForm.valid" class="bg-blue-500 text-neutral-50 px-2 py-1 rounded-lg hover:shadow-xl transition-all disabled:bg-blue-200 disabled:hover:shadow-none">Create Recipe</button>
+      @if(requestFailed) {
+        <p class="text-red-500 my-2">Adding recipe failed - Please try again.</p>
+      }
     </form>
   </main>
 </div>

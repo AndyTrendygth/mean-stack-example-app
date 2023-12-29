@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, signal, WritableSignal} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Recipe } from '../recipe';
 import { RecipeService } from '../recipe.service';
@@ -12,7 +12,7 @@ import {RouterLink, RouterOutlet} from "@angular/router";
   styleUrl: './recipe-list.component.css'
 })
 export class RecipeListComponent implements OnInit{
-  recipes:Recipe[] = [];
+  recipes = signal<Recipe[]>([]);
 
   constructor(private recipeService:RecipeService){}
 
@@ -22,11 +22,18 @@ export class RecipeListComponent implements OnInit{
 
   private loadRecipes(){
     this.recipeService.getAllRecipes().subscribe(res => {
-      this.recipes = res;
+      this.recipes.set(res);
     })
   }
 
-  public deleteRecipe(id:string|undefined){
+  public deleteRecipe(id: string): void {
+    this.recipeService.deleteRecipe(id).subscribe((res:any)=>{
+      if(res.deletedCount==1){
+        this.recipes.update(arr=>
+           arr.filter(recipe => recipe._id !== id));
+      }
+    })
+
 
   }
 }

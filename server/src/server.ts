@@ -21,7 +21,12 @@ if (!EXPRESS_PORT) {
 connectToMongoDb(CONNECTION_URI)
 .then(()=>{
     const app = express();
-    
+    const cors=require('cors');
+    app.use(cors({
+        origin: 'http://localhost:4200', // Replace with your Angular app's URL
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+        credentials: true,
+    }));
     app.use("/api/recipes", recipeRouter);
     app.listen(EXPRESS_PORT,()=>{
         console.log(`Server running on localhost:${EXPRESS_PORT}`);
