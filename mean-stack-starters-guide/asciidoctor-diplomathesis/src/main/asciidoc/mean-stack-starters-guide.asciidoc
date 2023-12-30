@@ -28,8 +28,6 @@ detail.
 
 == The architecture of MEAN
 
-TODO: add MEAN architecture graphic
-
 === MongoDB as the primary database
 
 '''''
@@ -42,8 +40,6 @@ A big community and being able to host the database either locally with
 docker or with your favourite cloud provider makes Mongo a great choice
 as a database.
 
-https://www.mongodb.com/what-is-mongodb
-
 === Express and Node.js for the backend
 
 '''''
@@ -52,7 +48,7 @@ Sitting on top of the database, we have our backend server hosted with
 Node.js and an Express API.
 
 Node.js is a JavaScript runtime environment mostly acting as a server
-for such applications. The ``feature'' making Node outstanding is that
+for such applications. The 'feature' making Node outstanding is that
 it enables JavaScript to run outside of web-browsers.
 
 It’s open-source and runs on almost any operating system, if you already
@@ -61,10 +57,8 @@ too!
 
 Express enables our app to talk with our frontend and the outer world,
 it’s our API – also based on JavaScript. Powering web applications since
-2010 hand in hand with Node.js its service is crucial for the MEAN
+2010 hand in hand with Node.js, its service is crucial for the MEAN
 stack.
-
-https://expressjs.com/
 
 === Angular as the frontend
 
@@ -85,7 +79,7 @@ which has a lot of updates and new features!
 == Variations of the MEAN stack
 
 The frontend framework is the most opinionated discussion around web
-developers (JavaScript framework war) and caused the variations of the
+developers (JavaScript framework war) and caused some variations of the
 MEAN stack.
 
 The framework for the frontend is the only thing that gets switched out
@@ -116,11 +110,6 @@ If you were to include the MERN stack, you’d have even more industry
 leaders on that list. That is because React gained a lot of popularity
 in the last 3 years.
 
-https://seclgroup.com/10-best-examples-of-websites-and-apps-built-with-angular/
-https://www.trio.dev/blog/companies-use-angular
-https://blog.hubspot.com/website/angularjs-website-examples
-https://www.monocubed.com/blog/websites-built-with-angular/
-
 == Pros of the MEAN stack
 
 === Only one language
@@ -135,14 +124,14 @@ and expensive to find for a business.
 Writing the code in one language is also good for the developer itself
 as it creates consistency throughout the project, and you don’t have to
 switch technologies every time you work on different architecture
-layers. That may increase your productivity and you can become a very
+layers. That increases your productivity, and you can become a very
 advanced JavaScript developer when working a lot with the technology.
 
-=== Big community and well supported
+=== Big community and well-supported
 
 '''''
 
-Angular, Express and MongoDB have a very big community and they have
+Angular, Express and MongoDB have a very big community, and they have
 been around for a long time which tells that these frameworks have been
 battle tested – which is great when developing, because you won’t have
 to migrate your system every time requirements change.
@@ -153,26 +142,26 @@ great. This ensures high-quality service and security which is crucial
 for developing large scale applications.
 
 Moreover, MongoDB is being looked after by MongoDB Inc., the company
-that founded the database platform – a big pro because the database
+that founded the database platform – a big pro, because the database
 really matters.
 
 == Cons of the MEAN stack
 
-Not everything is perfect even the MEAN stack! Sadly, it still has some
-flaws which need to be considered as well.
+Not everything is perfect, even the MEAN stack! Sadly, it still has some
+flaws which need to be considered when choosing it for a project.
 
 === No types by default
 
 '''''
 
-JavaScript itself doesn’t require you to use types which can cause a lot
+JavaScript itself does not require you to use types which can cause a lot
 of chaos in your code – imagine using a data object and having to guess
-in which format the values are, kinda hard eh?
+in which format the values are, kinda hard isn't it?
 
 Of course, that problem is solved by TypeScript – but it is not the
 default and there are many projects which don’t use it (just because
-they don’t have to). That makes your code hard to maintain, test and
-extend especially for developers that don’t know your codebase that
+they don’t have to). That makes the code hard to maintain, test and
+extend, especially for developers that don’t know your codebase that
 well.
 
 === Logic isolation
@@ -180,7 +169,7 @@ well.
 '''''
 
 Since we have a tight connected business and server logic it is pretty
-hard to separate them – often causing 🍝(spaghetti)-code, something that
+hard to separate them – sometimes causing 🍝(spaghetti)-code, something that
 we do not really want for scalable, testable and maintainable applications.
 
 == How to set up a MEAN application
@@ -207,7 +196,7 @@ If you got everything ready, go on reading!
 
 '''''
 
-First of all, we need our database. For that we’ll spin up a Docker
+First of all, we need the database. For that we’ll spin up a Docker
 container with a MongoDB image.
 
 ____
@@ -230,12 +219,12 @@ And then run the container with a name you want.
 docker run -d -p 27017:27017 --name=mean-stack-example-mongodb -e MONGO_INITDB_ROOT_USERNAME=user -e MONGO_INITDB_ROOT_PASSWORD=password mongo:latest
 ----
 
-To bind our container port to our machine port we use the `-p` (port)
+To bind the container port to the machine port we use the `-p` (port)
 option. We also want to secure our database with a root admin user,
 which can be set with `-e` (environment variable) for username and
 password.
 
-To test if our container works, we can open up VS Code and connect to
+To test if the container works, you can open up VS Code and connect to
 our database using the MongoDB extension. Just click on the `Add a
 connection' button and choose `Connection Settings' – which will open a
 form to specify the connection.
@@ -258,8 +247,7 @@ db.createCollection('testCollection');
 db.testCollection.insertOne({name:"hey there!"})
 ----
 
-That’s all you need to know for now. Let us go on and set up our walking
-skeleton.
+That’s all you need to know for now. Let us go on and set up the application.
 
 === Set up the server-side application
 
@@ -274,7 +262,7 @@ create the folders for the backend:
 * `server`
 * `server/src`
 
-The src folder is where our Express files will go. Now init a node
+The src folder is where our Express files will go. Now initialize a node
 project inside the `server` directory.
 
 [source,shell]
@@ -338,6 +326,7 @@ install the Angular cli with the following command:
 
 [source,shell]
 ----
+cd ..
 npm install -g @angular/cli
 ----
 
@@ -352,7 +341,7 @@ ng new client --routing --style=css
 When the initialization is done, we’ll have a client folder where the
 Angular app is located. We need the `--routing` flag, so that a routing
 module is being generated (for the individual pages of the application).
-`--style` makes css our default preprocessor.
+`--style=css` makes css our default preprocessor.
 
 Now you can start the application by entering the following in your
 terminal:
@@ -373,27 +362,28 @@ reading!
 
 == Let’s build an example project!
 
-The best way to learn is practice – that’s why I’ll build a recipe book
+The best way to learn is practice – that’s why we’ll build a recipe book
 with the MEAN stack! It is a simple CRUD-app, here a sneak-peek on what
 it will look like:
 
-*TODO: Add image of application*
+image::../images/recipe-list.png[Recipe List]
 
 === Add document to MongoDB
 
 '''''
 
 Firstly, we’ll need a document in our database where we can store the
-recipes. For that, open up a playground in your VS Code MongoDB extension or your preferred database manager and
+recipes. For that, open up a playground in your VS Code MongoDB extension
+or your preferred database manager and
 add a document.
 
-[source,js]
+[source,javascript]
 ----
 use('test');
 db.createCollection('recipes');
 ----
 
-That's all we need to do on the database directly.
+That's all we need to do on the database level directly.
 
 === Create interfaces on server side for type safety
 
@@ -404,15 +394,16 @@ recipe looks like by creating a TypeScript interface for it.
 
 *mean-stack-example-app/server/src/recipe.ts*
 
-[source,ts]
+[source,typescript]
 ----
 import * as mongodb from "mongodb"
+import { Ingredient } from "./ingredient";
 
 export interface Recipe {
     title: string;
     description: string;
     category: "breakfast" | "main course" | "snack" | "dessert";
-    ingredients: object;
+    ingredients: Ingredient[];
     instructions: string;
     _id?: mongodb.ObjectId;
 }
@@ -424,7 +415,7 @@ generated by MongoDB automatically.
 
 *mean-stack-example-app/server/src/ingredient.ts*
 
-[source,ts]
+[source,typescript]
 ----
 import * as mongodb from "mongodb"
 
@@ -437,10 +428,10 @@ export interface Ingredient {
 ----
 
 An ingredient consists of a name, quantity and unit. And again the
-optional `_id`. That's it for our data model - not that complex but a comprehensive
+optional `_id`. That's it for our data model - not that complex, but a comprehensive
 model is not the main aim of this guide.
 
-=== Connect Express to database
+=== Connect Express to the database
 
 The next step is to connect our backend application to the database.
 
@@ -471,12 +462,12 @@ export async function connectToMongoDb(uri:string) {
 ----
 
 In this file, I am exporting a `collections` constant, which contains
-the recipes from the database. If your database model has more
+the recipes collection from the database. If your database model has more
 collections, you can reference them in this object.
 
 The `connectToMongoDb` function handles the connection to the database
-with the native MongoClient from mongodb. When calling this method we need to add a
-`uri` parameter, which is our connection string to the database.
+with the native MongoClient, developed by MongoDB. When calling this method you need to add a
+`uri` parameter, which is the connection string to the database.
 
 Because I have my collection in the `test` database I need to
 reference it in the `db` constant. Lastly, I am pulling the `recipes`
@@ -493,6 +484,7 @@ import * as dotenv from "dotenv"
 import express from "express"
 import { connectToMongoDb } from "./database"
 import { error } from "console";
+import { recipeRouter } from "./recipe.routes";
 
 dotenv.config();
 
@@ -511,7 +503,12 @@ if (!EXPRESS_PORT) {
 connectToMongoDb(CONNECTION_URI)
 .then(()=>{
     const app = express();
-    
+    const cors=require('cors');
+    app.use(cors({
+        origin: 'http://localhost:4200', // Replace with your Angular app's URL
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+        credentials: true,
+    }));
     app.listen(EXPRESS_PORT,()=>{
         console.log(`Server running on localhost:${EXPRESS_PORT}`);
     })
@@ -536,8 +533,9 @@ on the connection in the VS Code MongoDB extension -> `Copy Connection String`.
 ____
 
 To prevent basic errors, I am checking if the variables do exist, and then
-proceed to calling the `connectToMongoDb` function with the
-`CONNECTION_URI` as a parameter. If the connection was successful, an Express server will be started on the
+proceed to configure cors. This is a must, otherwise you won't be able to make
+requests from your Angular client. Then, the `connectToMongoDb` function with the
+`CONNECTION_URI` as a parameter is called. If the connection was successful, an Express server will be started on the
 specified port.
 
 Let’s see if this works. Enter this command to start the server:
@@ -558,15 +556,11 @@ Server running on localhost:5200
 
 Great, that’s it for the database connection! Let's move on to the backend implementation.
 
-
-For this use-case we want to fetch multiple and a single recipe from the
-database with GET requests and display them on the frontend.
-
 === Create REST Endpoints
 
 '''''
 
-Firstly, let us create the endpoints to fetch/update/delete data from the database.
+Firstly, let us create the endpoints to fetch/create/update/delete data from the database.
 For that, I’ll use the router from express in the `recipe.routes.ts`
 file.
 
@@ -575,8 +569,8 @@ The endpoints needed:
  - `/` -> GET all recipes
  - `/:id` -> GET one recipe by its id
  - `/` -> POST create a recipe
- - `/:id` -> PUT update a recipe
- - `/:id` -> DELETE a recipe
+ - `/:id` -> PUT update a recipe by its id
+ - `/:id` -> DELETE a recipe by its id
 
 Start by exporting a constant of the router and tell it to use json.
 
@@ -619,7 +613,7 @@ In the try block I am using my `collections.recipes` instance from the
 If everything went fine, we receive all recipes in an array along with a status code
 of 200.
 
-To receive just one recipe by it’s id, add the following to your
+To receive just one recipe by its id, add the following to your
 `recipe.routes.ts`
 
 *mean-stack-example-app/server/src/recipe.routes.ts*
@@ -652,7 +646,7 @@ error runs into the catch, which sends a status code of 500.
 
 ==== POST Create a recipe
 
-To create a recipe with a POST request, we now need to create a new endpoint
+To create a recipe with a POST request, we need to create a new endpoint
 calling the `.post()` method on the router.
 
 *mean-stack-example-app/server/src/recipe.routes.ts*
@@ -675,9 +669,9 @@ recipeRouter.post("/", async (req, res)=>{
 ----
 
 The recipe the client wants to add lies in the body of the request, which
-we can access with the `.body` function. Then we call the database and tell it
+we can access with the `.body` function. We then call the database and tell it
 to insert the requested recipe. If it works, we send back the `insertedRecipe` object,
-which contains the id of the newly created object. Otherwise we catch the error
+which contains the id of the newly created object. Otherwise, we catch the error
 and return it with a status code.
 
 ==== DELETE a recipe
@@ -718,7 +712,7 @@ sends an invalid id.
 "Whoops there's a typo in my recipe - let me fix that by updating it".
 
 That's what PUT requests are for, updating an existing entity in the datastore.
-In Express we can do so by calling the `put()` function on the router.
+In Express, we can do so by calling the `put()` operation on the router.
 
 The put/update method for the recipes would look like this:
 
@@ -775,7 +769,7 @@ Don't forget to restart your server after modifying this file!
 
 === Finally, the frontend (Angular)
 
-For all my frontend gurus, now the fun part for you;)
+For all my frontend gurus, now the fun part for you 😉.
 Leave your Express server and Docker container running and switch over
 to your client directory - that's where everything will happen now.
 
@@ -784,10 +778,10 @@ to your client directory - that's where everything will happen now.
 '''''
 
 To follow our type-safe principle, we need to establish types on the client as well.
-We already created interfaces for the server and now we need them on our
+We already created interfaces for the server, and now we need them on our
 client too.
 
-If you have the question why we don’t make a shared library - that’s
+You might ask yourself, why don’t we make a shared library?  - that’s
 because these interfaces defer a bit.
 
 Either create a `recipe.ts` + `ingredient.ts` file in the `src/app/`
@@ -803,7 +797,7 @@ Open up the files and add the interface specification to them:
 
 *mean-stack-example-app/client/src/app/ingredient.ts*
 
-[source,ts]
+[source,typescript]
 ----
 export interface Ingredient {
     name?: string;
@@ -815,12 +809,14 @@ export interface Ingredient {
 
 *mean-stack-example-app/client/src/app/recipe.ts*
 
-[source,ts]
+[source,typescript]
 ----
+import { Ingredient } from "./ingredient";
+
 export interface Recipe {
     title?: string;
     description?: string;
-    category?: "breakfast" | "main course" | "snack" | "dessert";
+    category?: "breakfast" | "main course" | "snack" | "dessert" ;
     ingredients?: Ingredient[];
     instructions?: string;
     _id?: string;
@@ -828,7 +824,7 @@ export interface Recipe {
 ----
 
 Notice the difference from the server interfaces in the id attribute
-(it’s just a string!) and all fields have a `?' so typescript doesn’t
+(it’s just a string!) and all fields have a `?` so typescript doesn’t
 throw any errors because of nullable fields.
 
 ==== Create service to communicate with Express API
@@ -836,11 +832,10 @@ throw any errors because of nullable fields.
 '''''
 
 Next we’ll create an Angular service that handles the communication with
-our API, an extra service separates the logic from the presentation layer.
+our API, it separates the logic from the presentation layer and makes it reusable.
 
 Using the `ng generate service recipe` command, we can automatically
-generate a boilerplate service class with a test (we’ll need that later
-on).
+generate a boilerplate service class.
 
 Before implementing the service, add the following to your `app.config.ts` file:
 
@@ -858,8 +853,13 @@ endpoints.
 
 *mean-stack-example-app/client/src/app/recipe.service.ts*
 
-[source,ts]
+[source,typescript]
 ----
+import { Injectable } from '@angular/core';
+import { Recipe } from './recipe';
+import { HttpClient } from '@angular/common/http';
+import {AddRecipeRequest} from "./addRecipeRequest";
+
 @Injectable({
   providedIn: 'root'
 })
@@ -877,7 +877,7 @@ export class RecipeService {
     return this.http.get<Recipe>(this.url+"/"+id);
   }
 
-  createRecipe(recipe:Recipe){
+  createRecipe(recipe:AddRecipeRequest){
     return this.http.post<unknown>(this.url+"/", recipe);
   }
 
@@ -885,9 +885,24 @@ export class RecipeService {
     return this.http.delete<unknown>(this.url+"/"+id);
   }
 
-  updateRecipe(id:string, recipe:Recipe){
+  updateRecipe(id:string, recipe:AddRecipeRequest){
     return this.http.put<unknown>(this.url+"/"+id, recipe);
   }
+
+}
+----
+
+And because we do not send an actual recipe as a request, you need a
+`AddRecipeRequest` TypeScript interface:
+
+[source, typescript]
+----
+export interface AddRecipeRequest {
+  title?: string | undefined;
+  description?: string | undefined;
+  category?: string | undefined;
+  ingredients?: unknown[] | undefined;
+  instructions?: string | undefined;
 }
 ----
 
@@ -925,7 +940,7 @@ which we’ll take a look at now.
 
 '''''
 
-The recipe-list component will handle all the presentation, styling and
+The recipe-list component will handle the presentation, styling and
 logic for displaying all recipes. Create one by entering the following
 command in your terminal:
 
@@ -962,8 +977,8 @@ Angular too, you just need to change a few properties in the annotation.
 But if you have seen React components before, you know they can get
 pretty long and look like some delicious spaghetti(code) 🍝.
 
-Splitting the code into seperate files makes it look better and is
-easier to maintain - and we follow an important principle: *Single
+Splitting the code into separate files makes it look better and is
+easier to maintain - and we follow an important software design principle: *Single
 Concern*! Each file is only responsible for one part.
 
 Now we can add the following html to the `recipe-list.component.html`
@@ -971,7 +986,7 @@ file:
 
 *mean-stack-example-app/client/src/app/recipe-list/recipe-list.component.html*
 
-[source,html]
+[source,angular2html]
 ----
 <div class="p-8">
 <header class="my-6 flex items-start gap-6">
@@ -981,17 +996,15 @@ file:
   </div>
     <a routerLink="/recipes/add" class="bg-blue-500 text-neutral-50 px-2 py-1 rounded-lg hover:shadow-xl transition-all">Add a new Recipe +</a>
 </header>
-
 <main>
-    <div class="recipe-list flex gap-6">
-
-    @for (recipe of recipes; track recipe) {
-        <div class="recipe flex max-w-80 flex-col gap-2 shadow-lg p-3 rounded-lg hover:shadow-xl hover:cursor-pointer transition-all bg-neutral-50">
+    <div class="recipe-list flex gap-6 flex-wrap">
+    @for (recipe of recipes(); track recipe) {
+        <div class="recipe flex w-80 flex-col gap-2 shadow-lg p-3 rounded-lg hover:shadow-xl hover:cursor-pointer transition-all bg-neutral-50">
             <div class="flex items-center justify-between flex-wrap">
-            <h2 class="text-xl font-medium"><a routerLink="/recipes/{{recipe._id}}">{{ recipe.title }}</a></h2>
+            <h2 class="text-xl font-medium"><a routerLink="/recipes/view/{{recipe._id}}">{{ recipe.title }}</a></h2>
             <div class="flex gap-2 items-center">
             <a routerLink="/recipes/edit/{{recipe._id}}" class="text-neutral-500" >Edit</a>
-            <button class=" text-red-500 rounded-lg bg-red-300 px-2 py-1" (click)="deleteRecipe(recipe._id)" >Delete</button>
+            <button class=" text-red-500 rounded-lg bg-red-300 px-2 py-1" (click)="deleteRecipe(recipe._id || '')" >Delete</button>
             </div>
             </div>
             <div class="w-min text-nowrap category rounded-xl bg-blue-200 text-blue-500 px-2 py-1 text-sm ">{{ recipe.category }}</div>
@@ -1032,23 +1045,23 @@ the variable needs to be defined, which I did in the
 
 *mean-stack-example-app/client/src/app/recipe-list/recipe-list.component.ts*
 
-[source,ts]
+[source,typescript]
 ----
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, signal, WritableSignal} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Recipe } from '../recipe';
 import { RecipeService } from '../recipe.service';
-import {RouterLink} from "@angular/router";
+import {RouterLink, RouterOutlet} from "@angular/router";
 
 @Component({
   selector: 'app-recipe-list',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, RouterOutlet],
   templateUrl: './recipe-list.component.html',
   styleUrl: './recipe-list.component.css'
 })
 export class RecipeListComponent implements OnInit{
-  recipes:Recipe[] = [];
+  recipes = signal<Recipe[]>([]);
 
   constructor(private recipeService:RecipeService){}
 
@@ -1058,8 +1071,16 @@ export class RecipeListComponent implements OnInit{
 
   private loadRecipes(){
     this.recipeService.getAllRecipes().subscribe(res => {
-      this.recipes = res;
-      console.log(res);
+      this.recipes.set(res);
+    })
+  }
+
+  public deleteRecipe(id: string): void {
+    this.recipeService.deleteRecipe(id).subscribe((res:any)=>{
+      if(res.deletedCount==1){
+        this.recipes.update(arr=>
+           arr.filter(recipe => recipe._id !== id));
+      }
     })
   }
 }
@@ -1074,6 +1095,11 @@ Since we always want the freshest data from the database we’ll use the
 `OnInit` interface, which whenever we access the `/recipes` route calls
 the `ngOnInit()` function (similar to `useEffect()` in React). And that function calls our load function to
 receive and display the newest data.
+
+And one new Syntax feature: Angular Signals! Because we want the recipe list to be
+reactive (update the UI when we delete one for example) Signals are our help in need.
+Just define the variable with `signal<Recipe[]>([])` and you're good to go!
+To update a signal you can call either call the `set()` or `update()` method.
 
 With all that (fine seperated!) code, we get something that looks like
 this:
@@ -1092,46 +1118,40 @@ file by adding a new object to the array:
 
 *mean-stack-example-app/client/src/app/app.routes.ts*
 
-[source,ts]
+[source,typescript]
 ----
 ...
-{path: 'recipes/:id', component: RecipeComponent},
+{ path: 'recipes/view/:id', component: RecipeComponent},
 ...
 ----
 
 The `:id` is a placeholder for the dynamic id each recipe has.
 
-And a bit more configuration: Since we’re using these dynamic ids, we
-need to tell Angular that, otherwise it won’t work. Inside your
-`app.config.ts`, add the `withComponentInputBinding()` parameter to your `provideRouter()`
-function:
-
-*mean-stack-example-app/client/src/app/app.config.ts*
-
-[source,ts]
-----
-provideRouter(routes, withComponentInputBinding())
-----
-
 Great! Now we can work out the component logic for viewing a single recipe.
 
 *mean-stack-example-app/client/src/app/recipe/recipe.component.ts*
 
-[source,ts]
+[source,typescript]
 ----
+import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RecipeService } from '../recipe.service';
+import { Recipe } from '../recipe';
+import {RouterLink} from "@angular/router";
+
 @Component({
   selector: 'app-recipe',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './recipe.component.html',
   styleUrl: './recipe.component.css'
 })
 export class RecipeComponent {
 
-  constructor(private recipeService:RecipeService) {}
+  constructor(private recipeService:RecipeService) {
 
+  }
   recipe:Recipe = {};
-  
   @Input()
   set id(recipeId: string) {
     this.recipeService.getSingleRecipe(recipeId).subscribe(res=>{
@@ -1152,7 +1172,7 @@ And that’s all! The html is pretty easy too:
 [source,html]
 ----
 <div class="recipe flex flex-col gap-5 p-3 h-screen bg-neutral-50">
-    <a href="/recipes" class="text-sm underline">🏠Back to home</a>
+    <a routerLink="/recipes" class="text-sm underline">🏠Back to home</a>
     <h2 class="text-3xl font-medium">{{ recipe.title }}</h2>
     <div class="w-min text-nowrap category rounded-xl bg-blue-200 text-blue-500 px-2 py-1 text-sm ">{{ recipe.category }}</div>
     <p>{{ recipe.description }}</p>
@@ -1188,7 +1208,7 @@ And add the route to `app.routes.ts`:
 
 [source, typescript]
 ----
-{path: 'recipes/add', component: RecipeAddComponent},
+{ path: 'recipes/add', component: RecipeAddComponent},
 ----
 
 Adding a new recipe has a few caveats:
@@ -1273,7 +1293,6 @@ export class RecipeAddComponent {
       });
     }
   }
-
 }
 ----
 
@@ -1371,7 +1390,6 @@ That's it for the logic, now the presentation:
     </form>
   </main>
 </div>
-
 ----
 
 The biggest part of the page is, of course, the form. To bind the form
@@ -1740,7 +1758,7 @@ chaos. MongoDB won't stop you because there are no constraints like you have in
 a relational database.
 
 The connector interfaces to use in the code are working fine and the
-docs are really good. MongoDB has a really neat blog page that is well maintained
+docs are great. MongoDB has a really neat blog page that is well maintained
 and easy to understand.
 
 === MEAN stack conclusion
@@ -1751,3 +1769,13 @@ if I am satisfied with the stack:
 Would I use MEAN to build projects in the future? Yes!
 
 But please don't be mad at me, because I may also use React (MERN) 😜.
+
+== Sources
+
+- https://seclgroup.com/10-best-examples-of-websites-and-apps-built-with-angular/
+- https://www.trio.dev/blog/companies-use-angular
+- https://blog.hubspot.com/website/angularjs-website-examples
+- https://www.monocubed.com/blog/websites-built-with-angular/
+- https://www.mongodb.com/languages/mean-stack-tutorial
+
+Written w ♥ by Andreas Krenn

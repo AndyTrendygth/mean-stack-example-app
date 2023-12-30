@@ -16,9 +16,7 @@ export class RecipeComponent {
   constructor(private recipeService:RecipeService) {
 
   }
-
   recipe:Recipe = {};
-
   @Input()
   set id(recipeId: string) {
     this.recipeService.getSingleRecipe(recipeId).subscribe(res=>{

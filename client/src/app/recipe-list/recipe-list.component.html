@@ -6,13 +6,8 @@
   </div>
     <a routerLink="/recipes/add" class="bg-blue-500 text-neutral-50 px-2 py-1 rounded-lg hover:shadow-xl transition-all">Add a new Recipe +</a>
 </header>
-
 <main>
-
-
-
     <div class="recipe-list flex gap-6 flex-wrap">
-
     @for (recipe of recipes(); track recipe) {
         <div class="recipe flex w-80 flex-col gap-2 shadow-lg p-3 rounded-lg hover:shadow-xl hover:cursor-pointer transition-all bg-neutral-50">
             <div class="flex items-center justify-between flex-wrap">
@@ -36,9 +31,7 @@
         </div>
     }
     </div>
-
 </main>
-
 </div>
 
 

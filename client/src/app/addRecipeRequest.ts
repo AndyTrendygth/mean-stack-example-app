@@ -1,5 +1,3 @@
-import {Ingredient} from "./ingredient";
-
 export interface AddRecipeRequest {
   title?: string | undefined;
   description?: string | undefined;
