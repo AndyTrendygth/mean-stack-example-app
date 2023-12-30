@@ -2,14 +2,15 @@ import {Component, Input} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {RecipeService} from "../recipe.service";
 import {FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
-import {Router} from "@angular/router";
+import {Router, RouterLink} from "@angular/router";
 import {Recipe} from "../recipe";
 import {AddRecipeRequest} from "../addRecipeRequest";
+import {Ingredient} from "../ingredient";
 
 @Component({
   selector: 'app-recipe-edit',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './recipe-edit.component.html',
   styleUrl: './recipe-edit.component.css'
 })
@@ -21,22 +22,29 @@ export class RecipeEditComponent {
   categories: string[] = ['breakfast', 'main course', 'snack', 'dessert'];
   requestFailed: boolean = false;
   recipe:Recipe = {};
-  editRecipeForm;
+  editRecipeForm = this.fb.group({
+    title: ['', Validators.required],
+    description: ['', Validators.required],
+    category: ['', Validators.required],
+    ingredients: this.fb.array([]),
+    instructions: ['', [Validators.required, Validators.minLength(10)]]
+  });
+
   @Input()
   set id(recipeId: string) {
     this.recipeService.getSingleRecipe(recipeId).subscribe(res=>{
       this.recipe = res;
-      this.editRecipeForm = this.fb.group({
-        title: [this.recipe.title, Validators.required],
-        description: ['', Validators.required],
-        category: ['', Validators.required],
-        ingredients: this.fb.array([]),
-        instructions: ['', [Validators.required, Validators.minLength(10)]]
-      });
+      this.editRecipeForm.patchValue({
+        title: this.recipe.title || '',
+        description: this.recipe.description || '',
+        category: this.recipe.category || '',
+        instructions: this.recipe.instructions || '',
+      })
+      this.recipe.ingredients?.forEach(ingredient => {
+        this.addExistingIngredient(ingredient);
+      })
     })
   }
-
-
 
   get ingredients(): FormArray {
     return this.editRecipeForm.get('ingredients') as FormArray;
@@ -47,6 +55,14 @@ export class RecipeEditComponent {
       name: ['', Validators.required],
       quantity: ['', [Validators.required, Validators.min(0)]],
       unit: ['', [Validators.required, Validators.minLength(1)]]
+    }))
+  }
+
+  addExistingIngredient(ingredient:Ingredient): void {
+    this.ingredients.push(this.fb.group({
+      name: [ingredient.name, Validators.required],
+      quantity: [ingredient.quantity, [Validators.required, Validators.min(0)]],
+      unit: [ingredient.unit, [Validators.required, Validators.minLength(1)]]
     }))
   }
 
@@ -68,7 +84,7 @@ export class RecipeEditComponent {
       };
 
       this.recipeService.updateRecipe(this.recipe._id || '',updatedRecipe).subscribe((res: any) => {
-        if (res.insertedId != null) {
+        if (res.modifiedCount == 1) {
           this.router.navigate(["/recipes"]);
         } else {
           this.requestFailed = true;

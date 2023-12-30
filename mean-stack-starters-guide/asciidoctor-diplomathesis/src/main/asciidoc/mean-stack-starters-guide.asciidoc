@@ -1466,5 +1466,288 @@ file, write:
 
 [source, typescript]
 ----
+import {Component, Input} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {RecipeService} from "../recipe.service";
+import {FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {Router, RouterLink} from "@angular/router";
+import {Recipe} from "../recipe";
+import {AddRecipeRequest} from "../addRecipeRequest";
+import {Ingredient} from "../ingredient";
 
+@Component({
+  selector: 'app-recipe-edit',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  templateUrl: './recipe-edit.component.html',
+  styleUrl: './recipe-edit.component.css'
+})
+export class RecipeEditComponent {
+
+  constructor(private recipeService:RecipeService, private fb: FormBuilder, private router:Router) {
+  }
+
+  categories: string[] = ['breakfast', 'main course', 'snack', 'dessert'];
+  requestFailed: boolean = false;
+  recipe:Recipe = {};
+  editRecipeForm = this.fb.group({
+    title: ['', Validators.required],
+    description: ['', Validators.required],
+    category: ['', Validators.required],
+    ingredients: this.fb.array([]),
+    instructions: ['', [Validators.required, Validators.minLength(10)]]
+  });
+
+  @Input()
+  set id(recipeId: string) {
+    this.recipeService.getSingleRecipe(recipeId).subscribe(res=>{
+      this.recipe = res;
+      this.editRecipeForm.patchValue({
+        title: this.recipe.title || '',
+        description: this.recipe.description || '',
+        category: this.recipe.category || '',
+        instructions: this.recipe.instructions || '',
+      })
+      this.recipe.ingredients?.forEach(ingredient => {
+        this.addExistingIngredient(ingredient);
+      })
+    })
+  }
+
+  get ingredients(): FormArray {
+    return this.editRecipeForm.get('ingredients') as FormArray;
+  }
+
+  addIngredient(): void {
+    this.ingredients.push(this.fb.group({
+      name: ['', Validators.required],
+      quantity: ['', [Validators.required, Validators.min(0)]],
+      unit: ['', [Validators.required, Validators.minLength(1)]]
+    }))
+  }
+
+  addExistingIngredient(ingredient:Ingredient): void {
+    this.ingredients.push(this.fb.group({
+      name: [ingredient.name, Validators.required],
+      quantity: [ingredient.quantity, [Validators.required, Validators.min(0)]],
+      unit: [ingredient.unit, [Validators.required, Validators.minLength(1)]]
+    }))
+  }
+
+  removeIngredient(index: number): void {
+    this.ingredients.removeAt(index);
+  }
+
+  updateRecipe(): void {
+    if (this.editRecipeForm.valid) {
+      this.requestFailed = false;
+      const recipeData: any = this.editRecipeForm.value;
+
+      const updatedRecipe: AddRecipeRequest = {
+        title: recipeData.title,
+        description: recipeData.description,
+        category: recipeData.category,
+        ingredients: recipeData.ingredients,
+        instructions: recipeData.instructions
+      };
+
+      this.recipeService.updateRecipe(this.recipe._id || '',updatedRecipe).subscribe((res: any) => {
+        if (res.modifiedCount == 1) {
+          this.router.navigate(["/recipes"]);
+        } else {
+          this.requestFailed = true;
+        }
+      });
+    }
+  }
+}
 ----
+
+Some of the code is almost the same as in the `recipe-add` component. Because
+we already have existing data in this form, it needs to be loaded properly, which
+happens in the `set id(recipeId: string)` function.
+
+It fetches the data for the recipe using the id url parameter and updates the
+form group to the data of the fetched recipe. For that, we can use
+the inbuilt function `patchValue()`, which takes in an object of the values
+the `FormGroup` has. For the ingredients (a `FormArray`), we need to loop over
+the ingredients on the recipe and add them to the form - that happens in the
+`addExistingIngredient()` function.
+
+The `updateRecipe()` method calls the recipe service to update the recipe
+and redirects the user back to the list view upon a successful request.
+
+Now for the presentation part:
+
+[source, angular2html]
+----
+<div class="p-8">
+  <header class="my-6 flex flex-col items-start gap-6">
+    <a routerLink="/recipes" class="text-sm underline">🏠Back to home</a>
+    <h1 class="text-3xl font-bold">Edit Recipe {{editRecipeForm.get('title')?.value}}</h1>
+  </header>
+  <main>
+    <form [formGroup]="editRecipeForm" (submit)="updateRecipe()">
+      <div class="flex flex-col gap-1 pb-4">
+        <label for="title" class="text-neutral-400">Title </label>
+        <input id="title" type="text" formControlName="title" class="border-2 rounded-md">
+      </div>
+      <div class="flex flex-col gap-1 pb-4">
+        <label for="description" class="text-neutral-400">Description </label>
+        <textarea id="description" type="text" formControlName="description" class="border-2 rounded-md"></textarea>
+      </div>
+      <div class="flex flex-col gap-1 pb-4">
+        <label for="category" class="text-neutral-400">Category </label>
+        <select id="category" formControlName="category" class="border-2 rounded-md">
+          @for(category of categories; track category) {
+          <option [value]="category">{{category}}</option>
+          }
+        </select>
+      </div>
+      <div class="flex flex-col gap-1 pb-4" formArrayName="ingredients">
+        <h3 class="text-base text-neutral-400 mb-3">Ingredients</h3>
+
+        @for(ingredient of ingredients.controls; track ingredient; let index = $index){
+        <div class="flex flex-col gap-3 mb-4" [formGroupName]="index">
+          <div class="flex flex-col gap-1">
+            <label for="ingredient-name-{{index}}" class="text-neutral-400">Name</label>
+            <input id="ingredient-name-{{index}}" type="text" formControlName="name" placeholder="Name" class="border-2 rounded-md">
+           </div>
+           <div class="flex flex-row justify-between items-end">
+           <div class="flex flex-col gap-1">
+           <label for="ingredient-quantity-{{index}}" class="text-neutral-400">Quantity</label>
+            <input id="ingredient-quantity-{{index}}" type="number" formControlName="quantity" placeholder="1" class="border-2 rounded-md">
+          </div>
+          <div class="flex flex-col gap-1">
+           <label for="ingredient-unit-{{index}}" class="text-neutral-400">Unit</label>
+            <input id="ingredient-unit-{{index}}" type="text" formControlName="unit" placeholder="ml" class="border-2 rounded-md">
+          </div>
+          <button type="button" (click)="removeIngredient(index)" class="text-red-500 rounded-lg bg-red-300 px-2 py-1">Delete</button>
+           </div>
+        </div>
+        }
+
+        <button type="button" (click)="addIngredient()" class="bg-blue-500 text-neutral-50 px-2 py-1 rounded-lg hover:shadow-xl transition-all">Add ingredient +</button>
+      </div>
+      <div class="flex flex-col gap-1 pb-4">
+        <label for="instructions" class="text-neutral-400">Instructions </label>
+        <textarea id="instructions" type="text" formControlName="instructions" class="border-2 rounded-md"></textarea>
+      </div>
+      <button type="submit" [disabled]="!editRecipeForm.valid" class="bg-blue-500 text-neutral-50 px-2 py-1 rounded-lg hover:shadow-xl transition-all disabled:bg-blue-200 disabled:hover:shadow-none">Create Recipe</button>
+      @if(requestFailed) {
+      <p class="text-red-500 my-2">Editing recipe failed - Please try again.</p>
+      }
+    </form>
+  </main>
+
+</div>
+----
+
+The html is almost the same as in the `recipe-add` component. But I've
+added one special thing, well not that special, but something to show off
+reactivity. It's the reference to the form variable of the recipe title,
+which updates as you change the name in the input field!
+
+And that's it - we created a simple recipe book CRUD application using the
+MEAN-Stack! If you followed my guide until here, you're all set to build out
+your own ideas - the possibilities are endless!
+
+=== How you could extend the project
+
+Because of the limited time-frame I had to create this project there are
+a lot of things left to add, so feel free to clone the project
+and implement it!
+
+==== End-to-End Tests
+
+Cypress, Selenium or a different testing framework - end-to-end testing is super important,
+especially in big applications. So why not give it a try and increase
+the test coverage of the recipe book?
+
+==== Searching and Filtering
+
+Filter recipes by their categories, ingredients or even search them
+based on the content - maybe try out ElasticSearch for that? A topic
+with a lot of potential.
+
+==== Shopping Lists
+
+Add the ingredients of recipes to a shopping list so you don't need to
+think of what to buy - would be a great feature, eh? Especially great
+to further advance your REST and data modeling knowledge.
+
+==== Of course, AI
+
+What about an AI that could give you a weekly food plan based on
+your specific needs? Or gives you recommendations, helps you grind
+towards your weight goals, etc. - you see, there are endless
+possibilities, build what you think is worth and challenges you the most!
+
+==== Images
+
+Recipes with an image of what the food will look like are way nicer
+to look at and help the user. Maybe spin up an S3 bucket and get hands-on
+cloud experience? Great opportunity to advance on this important topic.
+
+==== Languages (i18n)
+
+Make the application multi-language and allow users to browse recipes
+in different languages - use Angular or a third party provider to achieve this!
+
+I think I've given you enough ideas - or maybe you come
+up with something else, feel free to do so! Now I have nothing more to say than
+happy coding!
+
+== Conclusion
+
+Well actually there is one or more things I have to say - the conclusion.
+
+What do I think of the MEAN stack after building a project?
+
+=== Angular
+
+I must say that I am really happy with Angular 17 - the new syntax
+is so much more convenient and not confusing anymore. Working with
+forms was the biggest pro I noticed - having it bind to variables, organizing them
+in groups, directly adding validations, pre-written methods to use,
+that's just great, big props to Angular!
+
+One thing - If you are troubleshooting an issue it's really difficult,
+because neither ChatGPT, StackOverflow or your IDE IntelliSense
+can help you. It's mostly grinding through the official documentation
+and trying to find the one helping code snippet 😅. But Angular 17 is
+still in Beta, so I don't want to be picky, it will be better in the future.
+
+=== Express
+
+Building the app was super easy and there was almost no structure overhead, which
+can be good, but pretty bad if you don't know what you're doing.
+
+Since it doesn't require you to abstract things into modules or layers, the risk
+of ending with some illegal looking code is not that small. So please keep that
+in mind if you're not that advanced in backend-development and educate yourself
+on software architecture.
+
+And a recommendation: Use Express with TypeScript, because without would be a bit
+of a chaos when the application grows.
+
+=== MongoDB
+
+Same as Express, super easy to set up and almost no structure overhead.
+
+But same here, if you don't really know what you are doing it can end in total
+chaos. MongoDB won't stop you because there are no constraints like you have in
+a relational database.
+
+The connector interfaces to use in the code are working fine and the
+docs are really good. MongoDB has a really neat blog page that is well maintained
+and easy to understand.
+
+=== MEAN stack conclusion
+
+I have explained my views on each layer, so just simple question to ask
+if I am satisfied with the stack:
+
+Would I use MEAN to build projects in the future? Yes!
+
+But please don't be mad at me, because I may also use React (MERN) 😜.
