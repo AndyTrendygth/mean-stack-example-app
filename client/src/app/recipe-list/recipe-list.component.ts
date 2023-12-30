@@ -33,7 +33,5 @@ export class RecipeListComponent implements OnInit{
            arr.filter(recipe => recipe._id !== id));
       }
     })
-
-
   }
 }

@@ -1426,4 +1426,45 @@ ready - if you forgot to add the delete button, here again:
 When the button is clicked, the function `deleteRecipe(recipe._id)` with the recipe id
 is called, so let's look at the implementation for that.
 
-TODO
+[source,typescript]
+----
+public deleteRecipe(id: string): void {
+    this.recipeService.deleteRecipe(id).subscribe((res:any)=>{
+      if(res.deletedCount==1){
+        this.recipes.update(arr=>
+           arr.filter(recipe => recipe._id !== id));
+      }
+    })
+  }
+----
+
+In a nutshell, the `deleteRecipe()` service function is called and when
+it was successful, the array of recipes will be updated/replaced with a filtered one.
+
+And because we're using Angular Signals, we can call the `update()`
+function on the recipes which updates the data without needing to refresh
+the page!
+
+image::../images/mean-delete-recipe.gif[Delete Recipe GIF]
+
+==== Edit a recipe
+
+If you need to change something in your existing recipes, you want to be
+able to edit them right? For that, we need a new page/component which
+you can generate with the `ng generate component recipe-edit` command.
+
+Then, add the route to your `app.routes.ts`:
+
+[source, typescript]
+----
+{ path: 'recipes/edit/:id', component:RecipeEditComponent}
+----
+
+Editing a recipe is a bit similar to creating a new recipe, because we use
+the same form. But let's look at the logic first - in your `recipe-edit.component.ts`
+file, write:
+
+[source, typescript]
+----
+
+----
