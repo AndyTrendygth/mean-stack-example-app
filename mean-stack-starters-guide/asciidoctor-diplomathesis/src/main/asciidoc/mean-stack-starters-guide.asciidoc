@@ -1779,3 +1779,5 @@ But please don't be mad at me, because I may also use React (MERN) 😜.
 - https://www.mongodb.com/languages/mean-stack-tutorial
 
 Written w ♥ by Andreas Krenn
+
+Have a look at the complete project at: https://github.com/AndyTrendygth/mean-stack-example-app
